@@ -4,6 +4,7 @@ Current tree (placeholder scaffold):
 
 ```
 .
+├── AGENTS.md
 ├── .github
 │   └── workflows
 │       └── ci.yml
