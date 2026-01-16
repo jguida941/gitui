@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
+from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -23,8 +24,10 @@ from PySide6.QtWidgets import (
     QWidget,
     QTextEdit,
     QPushButton,
+    QGraphicsDropShadowEffect,
 )
 
+from app.ui.theme_engine import ThemeEffects
 
 class ThemePreview(QWidget):
     """Compact preview gallery that exercises common widgets."""
@@ -149,3 +152,44 @@ class ThemePreview(QWidget):
         layout.addWidget(table)
         layout.addWidget(diff)
         return group
+
+    def apply_effects(self, effects: ThemeEffects) -> None:
+        """Apply effect settings to the preview widgets."""
+        groups = self.findChildren(QGroupBox)
+        if not effects.shadow_enabled:
+            for group in groups:
+                group.setGraphicsEffect(None)
+            return
+
+        for group in groups:
+            group.setGraphicsEffect(self._build_shadow_effect(effects))
+
+    def _build_shadow_effect(self, effects: ThemeEffects) -> QGraphicsDropShadowEffect:
+        effect = QGraphicsDropShadowEffect(self)
+        effect.setOffset(effects.shadow_x, effects.shadow_y)
+        # Qt drop shadows do not support spread; fold it into blur.
+        blur = max(0, effects.shadow_blur + effects.shadow_spread)
+        effect.setBlurRadius(blur)
+        effect.setColor(self._parse_shadow_color(effects.shadow_color))
+        return effect
+
+    def _parse_shadow_color(self, value: str) -> QColor:
+        color = QColor(value)
+        if color.isValid():
+            return color
+
+        text = value.strip().lower()
+        if text.startswith("rgba(") and text.endswith(")"):
+            parts = [p.strip() for p in text[5:-1].split(",")]
+            if len(parts) >= 4:
+                try:
+                    red = int(float(parts[0]))
+                    green = int(float(parts[1]))
+                    blue = int(float(parts[2]))
+                    alpha_raw = float(parts[3])
+                except ValueError:
+                    return QColor(0, 0, 0, 120)
+                alpha = int(alpha_raw * 255) if alpha_raw <= 1 else int(alpha_raw)
+                return QColor(red, green, blue, max(0, min(alpha, 255)))
+
+        return QColor(0, 0, 0, 120)

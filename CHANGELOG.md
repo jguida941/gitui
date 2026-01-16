@@ -99,3 +99,7 @@ All notable changes to this project will be documented here.
 - Property-based tests now skip cleanly when Hypothesis is missing.
 - Ignore Hypothesis cache directory in git.
 - Ignore mutmut output directories in git.
+- Commit template cursor movement now uses QTextCursor.End.
+- Branch upstream signal now accepts an optional branch name.
+- Theme editor sections render without heavy group box panels.
+- Theme preview now applies shadow effects from the theme engine.

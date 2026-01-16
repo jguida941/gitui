@@ -8,6 +8,7 @@ Key elements
 - Toolbar for presets, undo/redo, and live-preview toggle.
 - Tabs for Colors, Fonts, Metrics, Effects, Import/Export.
 - Live preview panel with a widget gallery.
+- Editor groups mark `editorSection` for lighter styling.
 
 Flowchart: ThemeEditorDialog
 
@@ -17,4 +18,4 @@ Flowchart: ThemeEditorDialog
 [control change] -> [ThemeEngine.set_*] -> [theme_changed]
         |
         v
-[preview + export updated]
+[sync controls] -> [ThemePreview.apply_effects] -> [preview + export updated]

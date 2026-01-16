@@ -25,7 +25,7 @@ class BranchesPanel(QWidget):
     switch_requested = Signal(str)
     create_requested = Signal(str, str)
     delete_requested = Signal(str, bool)
-    set_upstream_requested = Signal(str, str | None)
+    set_upstream_requested = Signal(str, object)
 
     def __init__(self) -> None:
         super().__init__()

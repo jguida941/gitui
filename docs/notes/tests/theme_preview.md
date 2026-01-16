@@ -2,7 +2,8 @@
 
 Purpose
 - Ensure ThemePreview builds key widget groups.
+- Ensure shadow effects apply to preview groups.
 
 Flowchart
 
-[test] -> [ThemePreview()] -> [assert group titles]
+[test] -> [ThemePreview()] -> [apply_effects] -> [assert group effects]

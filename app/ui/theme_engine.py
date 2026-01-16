@@ -15,12 +15,13 @@ Usage:
 from __future__ import annotations
 
 import json
+import re
 from dataclasses import dataclass, field
 from typing import Any
 from pathlib import Path
 
 from PySide6.QtCore import QObject, QSettings, Signal
-from PySide6.QtGui import QFont
+from PySide6.QtGui import QColor, QFont
 from PySide6.QtWidgets import QApplication
 
 
@@ -175,6 +176,158 @@ class ThemeState:
 
     def copy(self) -> "ThemeState":
         return ThemeState.from_dict(self.to_dict())
+
+
+def _adjust_color(value: str, factor: float) -> str:
+    color = QColor(value)
+    if not color.isValid():
+        return value
+
+    if factor >= 1:
+        color = color.lighter(int(factor * 100))
+    else:
+        color = color.darker(int(100 / max(factor, 0.01)))
+
+    if color.alpha() < 255:
+        return f"rgba({color.red()}, {color.green()}, {color.blue()}, {color.alphaF():.2f})"
+    return color.name()
+
+
+def parse_qss_to_theme(qss: str) -> dict[str, Any]:
+    """
+    Parse a QSS stylesheet and extract theme values.
+    Returns a dict suitable for ThemeState.from_dict().
+    """
+    colors: dict[str, str] = {}
+    metrics: dict[str, Any] = {}
+
+    # Color pattern: matches #hex, rgb(), rgba()
+    color_pattern = r'(#[0-9A-Fa-f]{3,8}|rgba?\s*\([^)]+\))'
+
+    # Property-to-theme-color mappings
+    color_mappings = {
+        'background-color': ['background', 'background_alt', 'surface'],
+        'background': ['background', 'background_alt', 'surface'],
+        'color': ['text', 'text_dim', 'text_disabled'],
+        'border-color': ['border', 'border_focus'],
+        'border': ['border'],
+        'selection-background-color': ['selection_bg'],
+        'selection-color': ['selection_text'],
+    }
+
+    # Track colors we've seen for each category
+    seen_colors: dict[str, list[str]] = {k: [] for k in color_mappings}
+
+    # Parse QSS rules
+    # Match property: value; patterns
+    prop_pattern = r'([a-zA-Z-]+)\s*:\s*([^;{}]+);'
+
+    for match in re.finditer(prop_pattern, qss):
+        prop_name = match.group(1).strip().lower()
+        prop_value = match.group(2).strip()
+
+        # Extract colors
+        if prop_name in color_mappings:
+            color_match = re.search(color_pattern, prop_value)
+            if color_match:
+                color_val = color_match.group(1)
+                # Normalize the color
+                qcolor = QColor(color_val)
+                if qcolor.isValid():
+                    normalized = qcolor.name() if qcolor.alpha() == 255 else \
+                        f"rgba({qcolor.red()}, {qcolor.green()}, {qcolor.blue()}, {qcolor.alphaF():.2f})"
+                    if normalized not in seen_colors[prop_name]:
+                        seen_colors[prop_name].append(normalized)
+
+        # Extract metrics
+        if prop_name == 'border-radius':
+            px_match = re.search(r'(\d+)(?:px)?', prop_value)
+            if px_match:
+                metrics['border_radius'] = int(px_match.group(1))
+
+        elif prop_name == 'padding':
+            px_match = re.search(r'(\d+)(?:px)?', prop_value)
+            if px_match:
+                metrics['padding'] = int(px_match.group(1))
+
+        elif prop_name == 'border-width':
+            px_match = re.search(r'(\d+)(?:px)?', prop_value)
+            if px_match:
+                metrics['border_width'] = int(px_match.group(1))
+
+        elif prop_name == 'font-size':
+            px_match = re.search(r'(\d+)(?:px)?', prop_value)
+            if px_match:
+                metrics['font_size'] = int(px_match.group(1))
+
+        elif prop_name == 'font-family':
+            # Extract first font family
+            font = prop_value.split(',')[0].strip().strip('"\'')
+            if font:
+                metrics['font_family'] = font
+
+    # Assign colors based on what we found
+    # Background colors (first = main, second = alt, third = surface)
+    bg_colors = seen_colors.get('background-color', []) + seen_colors.get('background', [])
+    bg_colors = list(dict.fromkeys(bg_colors))  # Remove duplicates, preserve order
+    if len(bg_colors) >= 1:
+        colors['background'] = bg_colors[0]
+    if len(bg_colors) >= 2:
+        colors['background_alt'] = bg_colors[1]
+    if len(bg_colors) >= 3:
+        colors['surface'] = bg_colors[2]
+
+    # Text colors
+    text_colors = seen_colors.get('color', [])
+    if len(text_colors) >= 1:
+        colors['text'] = text_colors[0]
+    if len(text_colors) >= 2:
+        colors['text_dim'] = text_colors[1]
+
+    # Border colors
+    border_colors = seen_colors.get('border-color', []) + seen_colors.get('border', [])
+    border_colors = list(dict.fromkeys(border_colors))
+    if len(border_colors) >= 1:
+        colors['border'] = border_colors[0]
+    if len(border_colors) >= 2:
+        colors['border_focus'] = border_colors[1]
+
+    # Selection colors
+    sel_bg = seen_colors.get('selection-background-color', [])
+    if sel_bg:
+        colors['selection_bg'] = sel_bg[0]
+    sel_text = seen_colors.get('selection-color', [])
+    if sel_text:
+        colors['selection_text'] = sel_text[0]
+
+    # Try to detect accent color (often used in :hover, QPushButton, etc.)
+    # Look for colors that aren't the main bg/text colors
+    all_colors_in_qss = re.findall(color_pattern, qss)
+    unique_colors = []
+    for c in all_colors_in_qss:
+        qc = QColor(c)
+        if qc.isValid():
+            norm = qc.name()
+            if norm not in unique_colors:
+                unique_colors.append(norm)
+
+    # Filter out already-assigned colors to find potential accent
+    assigned = set(colors.values())
+    potential_accents = [c for c in unique_colors if c not in assigned]
+
+    # Pick a vibrant color as accent (high saturation)
+    for c in potential_accents:
+        qc = QColor(c)
+        if qc.saturation() > 100:  # Reasonably saturated
+            colors['accent'] = c
+            break
+
+    return {
+        "name": "Imported QSS",
+        "colors": colors,
+        "metrics": metrics,
+        "effects": {}
+    }
 
 
 # ---------------------------------------------------------------------------
@@ -487,6 +640,8 @@ class ThemeEngine(QObject):
         """Set a color value by name."""
         if not hasattr(self._state.colors, name):
             return
+        # Clear raw QSS mode when user edits via controls
+        self._clear_raw_qss_mode()
         if record_undo:
             self._push_undo()
         setattr(self._state.colors, name, value)
@@ -510,6 +665,8 @@ class ThemeEngine(QObject):
         """Set a metric value by name."""
         if not hasattr(self._state.metrics, name):
             return
+        # Clear raw QSS mode when user edits via controls
+        self._clear_raw_qss_mode()
         if record_undo:
             self._push_undo()
         setattr(self._state.metrics, name, value)
@@ -533,6 +690,8 @@ class ThemeEngine(QObject):
         """Set an effect value by name."""
         if not hasattr(self._state.effects, name):
             return
+        # Clear raw QSS mode when user edits via controls
+        self._clear_raw_qss_mode()
         if record_undo:
             self._push_undo()
         setattr(self._state.effects, name, value)
@@ -549,25 +708,58 @@ class ThemeEngine(QObject):
     # ─────────────────────────────────────────────────────────────────────
 
     def get_preset_names(self) -> list[str]:
-        """Get list of all available preset names."""
+        """Get list of all available preset names (JSON and QSS presets)."""
         presets = list(PRESETS.keys())
 
-        # Add custom presets from settings
+        # Add custom JSON presets from settings
         self._settings.beginGroup("custom_themes")
         for key in self._settings.childKeys():
             if key not in presets:
                 presets.append(key)
         self._settings.endGroup()
 
+        # Add custom QSS presets from settings
+        self._settings.beginGroup("qss_themes")
+        for key in self._settings.childKeys():
+            if key not in presets:
+                presets.append(f"[QSS] {key}")
+        self._settings.endGroup()
+
         return sorted(presets)
+
+    def is_qss_preset(self, name: str) -> bool:
+        """Check if a preset name refers to a QSS preset."""
+        return name.startswith("[QSS] ")
+
+    def get_qss_preset_name(self, display_name: str) -> str:
+        """Get the actual QSS preset name from display name."""
+        if display_name.startswith("[QSS] "):
+            return display_name[6:]
+        return display_name
 
     def apply_preset(self, name: str, record_undo: bool = True) -> bool:
         """Apply a preset theme by name."""
         if record_undo:
             self._push_undo()
 
+        # Check if this is a QSS preset
+        if self.is_qss_preset(name):
+            qss_name = self.get_qss_preset_name(name)
+            self._settings.beginGroup("qss_themes")
+            qss = self._settings.value(qss_name)
+            self._settings.endGroup()
+            if qss:
+                self._state = ThemeState(name=name)
+                self.apply_raw_stylesheet(qss, save=True)
+                self._emit_change()
+                return True
+            return False
+
         # Start with defaults
         self._state = ThemeState(name=name)
+
+        # Clear any raw QSS override when switching to a regular preset
+        self._settings.setValue("use_raw_qss", False)
 
         # Apply preset overrides
         if name in PRESETS:
@@ -645,10 +837,38 @@ class ThemeEngine(QObject):
         self._settings.setValue(name, json.dumps(self._state.to_dict()))
         self._settings.endGroup()
 
+    def save_qss_preset(self, name: str, qss: str) -> None:
+        """Save a raw QSS stylesheet as a named preset."""
+        self._settings.beginGroup("qss_themes")
+        self._settings.setValue(name, qss)
+        self._settings.endGroup()
+        # Also apply it immediately
+        self.apply_raw_stylesheet(qss, save=True)
+        self._state.name = f"[QSS] {name}"
+        self.save_current()
+
+    def get_qss_preset(self, name: str) -> str | None:
+        """Get a saved QSS preset by name."""
+        actual_name = self.get_qss_preset_name(name)
+        self._settings.beginGroup("qss_themes")
+        qss = self._settings.value(actual_name)
+        self._settings.endGroup()
+        return qss
+
     def delete_custom_preset(self, name: str) -> bool:
         """Delete a custom preset (cannot delete built-in)."""
         if name in PRESETS:
             return False
+
+        # Check if it's a QSS preset
+        if self.is_qss_preset(name):
+            qss_name = self.get_qss_preset_name(name)
+            self._settings.beginGroup("qss_themes")
+            self._settings.remove(qss_name)
+            self._settings.endGroup()
+            return True
+
+        # Regular custom preset
         self._settings.beginGroup("custom_themes")
         self._settings.remove(name)
         self._settings.endGroup()
@@ -719,6 +939,22 @@ class ThemeEngine(QObject):
         else:
             self.apply_preset("Dark", record_undo=False)
 
+    def has_raw_qss(self) -> bool:
+        """Check if a raw QSS stylesheet is saved."""
+        return self._settings.value("use_raw_qss", False, type=bool)
+
+    def get_saved_raw_qss(self) -> str | None:
+        """Get the saved raw QSS stylesheet if any."""
+        if self.has_raw_qss():
+            return self._settings.value("raw_qss", None)
+        return None
+
+    def _clear_raw_qss_mode(self) -> None:
+        """Clear raw QSS mode silently (used when user edits via controls)."""
+        if self.has_raw_qss():
+            self._settings.remove("raw_qss")
+            self._settings.setValue("use_raw_qss", False)
+
     def export_to_file(self, path: str | Path) -> None:
         """Export current theme to JSON file."""
         with open(path, "w") as f:
@@ -736,6 +972,57 @@ class ThemeEngine(QObject):
         except (json.JSONDecodeError, FileNotFoundError, TypeError):
             return False
 
+    def import_from_json(self, json_text: str) -> bool:
+        """Import theme from JSON string (for paste functionality)."""
+        try:
+            data = json.loads(json_text)
+            self._push_undo()
+            self._state = ThemeState.from_dict(data)
+            self._emit_change()
+            return True
+        except (json.JSONDecodeError, TypeError, KeyError):
+            return False
+
+    def import_from_qss(self, qss: str, name: str = "Imported QSS") -> bool:
+        """Import theme by parsing QSS stylesheet.
+
+        Extracts colors and metrics from QSS and creates an editable theme.
+        The theme can then be modified with the editor controls.
+        """
+        try:
+            data = parse_qss_to_theme(qss)
+            data["name"] = name
+            self._push_undo()
+            self._state = ThemeState.from_dict(data)
+            self._emit_change()
+            return True
+        except Exception:
+            return False
+
+    def apply_raw_stylesheet(self, qss: str, save: bool = True) -> None:
+        """Apply raw QSS stylesheet directly to the application.
+
+        Note: This bypasses the theme engine's color/metric system.
+        The controls won't reflect the applied styles.
+
+        Args:
+            qss: The QSS stylesheet string to apply.
+            save: If True, saves the QSS to settings for persistence.
+        """
+        from PySide6.QtWidgets import QApplication
+        app = QApplication.instance()
+        if app:
+            app.setStyleSheet(qss)
+        if save:
+            self._settings.setValue("raw_qss", qss)
+            self._settings.setValue("use_raw_qss", True)
+
+    def clear_raw_stylesheet(self) -> None:
+        """Clear any saved raw QSS and restore theme engine control."""
+        self._settings.remove("raw_qss")
+        self._settings.setValue("use_raw_qss", False)
+        self.apply_to_application()
+
     # ─────────────────────────────────────────────────────────────────────
     # Stylesheet Generation
     # ─────────────────────────────────────────────────────────────────────
@@ -745,6 +1032,13 @@ class ThemeEngine(QObject):
         c = self._state.colors
         m = self._state.metrics
         e = self._state.effects
+        button_hover = _adjust_color(c.surface, 1.08) if e.hover_brighten else c.background_alt
+        tool_hover = _adjust_color(c.surface, 1.06) if e.hover_brighten else c.background_alt
+        transition_css = ""
+        if e.transition_duration > 0:
+            transition_css = (
+                f"    transition: background-color {e.transition_duration}ms {e.transition_timing};"
+            )
 
         return f'''
 /* ═══════════════════════════════════════════════════════════════════════
@@ -791,10 +1085,11 @@ QPushButton {{
     padding: {m.padding}px {m.padding_large}px;
     min-width: {m.button_min_width}px;
     min-height: {m.input_height}px;
+{transition_css}
 }}
 
 QPushButton:hover {{
-    background-color: {c.background_alt};
+    background-color: {button_hover};
     border-color: {c.accent};
 }}
 
@@ -849,10 +1144,11 @@ QToolButton {{
     padding: {m.padding_small}px;
     min-width: 28px;
     min-height: 28px;
+{transition_css}
 }}
 
 QToolButton:hover {{
-    background-color: {c.background_alt};
+    background-color: {tool_hover};
     border-color: {c.accent};
 }}
 
@@ -1050,6 +1346,22 @@ QGroupBox::title {{
     padding: 0 {m.padding}px;
     color: {c.accent};
     background-color: {c.background_alt};
+}}
+
+QGroupBox[editorSection="true"] {{
+    background-color: transparent;
+    border: none;
+    margin-top: 10px;
+    padding-top: 8px;
+}}
+
+QGroupBox[editorSection="true"]::title {{
+    subcontrol-origin: margin;
+    subcontrol-position: top left;
+    left: 0;
+    padding: 0 {m.padding}px;
+    color: {c.text_dim};
+    background-color: transparent;
 }}
 
 /* ===== Tabs ===== */
@@ -1381,16 +1693,23 @@ QPlainTextEdit[consoleWidget="true"] {{
     def apply_to_application(self) -> None:
         """Apply the current theme to the application."""
         app = QApplication.instance()
-        if app:
+        if not app:
+            return
+
+        # Check if we should use raw QSS instead
+        raw_qss = self.get_saved_raw_qss()
+        if raw_qss:
+            app.setStyleSheet(raw_qss)
+        else:
             css = self.generate_stylesheet()
             app.setStyleSheet(css)
 
-            # Set application font
-            font = QFont(
-                self._state.metrics.font_family.split(",")[0].strip(),
-                self._state.metrics.font_size
-            )
-            app.setFont(font)
+        # Set application font
+        font = QFont(
+            self._state.metrics.font_family.split(",")[0].strip(),
+            self._state.metrics.font_size
+        )
+        app.setFont(font)
 
     def set_apply_enabled(self, enabled: bool) -> None:
         """Control whether theme changes apply to QApplication immediately."""
@@ -1426,4 +1745,9 @@ def init_theme() -> None:
     """Initialize the theme system and load saved preferences."""
     engine = get_engine()
     engine.load_saved()
-    engine.apply_to_application()
+    # Check for raw QSS override
+    raw_qss = engine.get_saved_raw_qss()
+    if raw_qss:
+        engine.apply_raw_stylesheet(raw_qss, save=False)
+    else:
+        engine.apply_to_application()

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Signal
+from PySide6.QtGui import QTextCursor
 from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -72,7 +73,7 @@ class CommitPanel(QWidget):
         if not self._message.toPlainText().strip():
             self._message.setPlainText(f"{text} ")
             cursor = self._message.textCursor()
-            cursor.movePosition(cursor.End)
+            cursor.movePosition(QTextCursor.End)
             self._message.setTextCursor(cursor)
 
     def _emit_commit(self) -> None:

@@ -149,7 +149,7 @@ class ThemeEditorDialog(QDialog):
         }
 
         for title, keys in categories.items():
-            group = QGroupBox(title)
+            group = self._make_editor_group(title)
             group_layout = QFormLayout(group)
             for key in keys:
                 btn = ColorPickerButton()
@@ -166,7 +166,7 @@ class ThemeEditorDialog(QDialog):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        families = QGroupBox("Font Families")
+        families = self._make_editor_group("Font Families")
         families_layout = QFormLayout(families)
 
         font_family = QFontComboBox()
@@ -183,7 +183,7 @@ class ThemeEditorDialog(QDialog):
         families_layout.addRow("Mono Font", font_mono)
         self._font_controls["font_family_mono"] = font_mono
 
-        sizes = QGroupBox("Font Sizes")
+        sizes = self._make_editor_group("Font Sizes")
         sizes_layout = QFormLayout(sizes)
         for key, label, minimum, maximum in [
             ("font_size", "Base", 8, 20),
@@ -209,7 +209,7 @@ class ThemeEditorDialog(QDialog):
         content = QWidget()
         layout = QVBoxLayout(content)
 
-        border = QGroupBox("Borders")
+        border = self._make_editor_group("Borders")
         border_layout = QFormLayout(border)
         for key, label, minimum, maximum in [
             ("border_radius", "Radius", 0, 24),
@@ -223,7 +223,7 @@ class ThemeEditorDialog(QDialog):
             self._metric_controls[key] = spin
             border_layout.addRow(label, spin)
 
-        spacing = QGroupBox("Spacing")
+        spacing = self._make_editor_group("Spacing")
         spacing_layout = QFormLayout(spacing)
         for key, label, minimum, maximum in [
             ("padding", "Padding", 0, 20),
@@ -237,7 +237,7 @@ class ThemeEditorDialog(QDialog):
             self._metric_controls[key] = spin
             spacing_layout.addRow(label, spin)
 
-        widgets = QGroupBox("Widgets")
+        widgets = self._make_editor_group("Widgets")
         widgets_layout = QFormLayout(widgets)
         for key, label, minimum, maximum in [
             ("button_min_width", "Button Min Width", 40, 200),
@@ -261,7 +261,7 @@ class ThemeEditorDialog(QDialog):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        shadow = QGroupBox("Shadow")
+        shadow = self._make_editor_group("Shadow")
         shadow_layout = QFormLayout(shadow)
 
         shadow_enabled = QCheckBox("Enable")
@@ -289,7 +289,7 @@ class ThemeEditorDialog(QDialog):
         self._effect_controls["shadow_color"] = shadow_color
         shadow_layout.addRow("Shadow Color", shadow_color)
 
-        transitions = QGroupBox("Transitions")
+        transitions = self._make_editor_group("Transitions")
         transitions_layout = QFormLayout(transitions)
         duration = self._make_spinbox(0, 1000)
         duration.valueChanged.connect(
@@ -306,7 +306,7 @@ class ThemeEditorDialog(QDialog):
         transitions_layout.addRow("Timing", timing)
         self._effect_controls["transition_timing"] = timing
 
-        hover = QGroupBox("Hover")
+        hover = self._make_editor_group("Hover")
         hover_layout = QFormLayout(hover)
         brighten = QCheckBox("Brighten")
         brighten.toggled.connect(
@@ -332,26 +332,83 @@ class ThemeEditorDialog(QDialog):
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        actions = QGroupBox("Actions")
-        actions_layout = QHBoxLayout(actions)
+        # File-based actions
+        file_actions = self._make_editor_group("File Operations")
+        file_actions_layout = QHBoxLayout(file_actions)
 
-        import_json = QPushButton("Import JSON")
+        import_json = QPushButton("Import JSON File")
         import_json.clicked.connect(self._import_json)
-        actions_layout.addWidget(import_json)
+        file_actions_layout.addWidget(import_json)
 
-        export_json = QPushButton("Export JSON")
+        export_json = QPushButton("Export JSON File")
         export_json.clicked.connect(self._export_json)
-        actions_layout.addWidget(export_json)
+        file_actions_layout.addWidget(export_json)
 
-        export_qss = QPushButton("Export QSS")
+        export_qss = QPushButton("Export QSS File")
         export_qss.clicked.connect(self._export_qss)
-        actions_layout.addWidget(export_qss)
+        file_actions_layout.addWidget(export_qss)
 
-        actions_layout.addStretch()
+        file_actions_layout.addStretch()
+        layout.addWidget(file_actions)
 
-        layout.addWidget(actions)
+        # Paste JSON section
+        json_paste = self._make_editor_group("Paste JSON Theme")
+        json_paste_layout = QVBoxLayout(json_paste)
+        self._json_paste_input = QPlainTextEdit()
+        self._json_paste_input.setPlaceholderText(
+            'Paste your JSON theme here...\n\n'
+            'Example format:\n'
+            '{\n'
+            '  "name": "My Theme",\n'
+            '  "colors": { "background": "#1e1e1e", ... },\n'
+            '  "metrics": { "border_radius": 4, ... },\n'
+            '  "effects": { "shadow_enabled": true, ... }\n'
+            '}'
+        )
+        self._json_paste_input.setLineWrapMode(QPlainTextEdit.NoWrap)
+        json_paste_layout.addWidget(self._json_paste_input)
 
-        preview = QGroupBox("Generated QSS Preview")
+        json_btn_layout = QHBoxLayout()
+        apply_json_btn = QPushButton("Apply JSON")
+        apply_json_btn.clicked.connect(self._apply_pasted_json)
+        json_btn_layout.addWidget(apply_json_btn)
+        clear_json_btn = QPushButton("Clear")
+        clear_json_btn.clicked.connect(lambda: self._json_paste_input.clear())
+        json_btn_layout.addWidget(clear_json_btn)
+        json_btn_layout.addStretch()
+        json_paste_layout.addLayout(json_btn_layout)
+        layout.addWidget(json_paste)
+
+        # Paste QSS section
+        qss_paste = self._make_editor_group("Paste QSS Stylesheet")
+        qss_paste_layout = QVBoxLayout(qss_paste)
+        self._qss_paste_input = QPlainTextEdit()
+        self._qss_paste_input.setPlaceholderText(
+            'Paste your QSS stylesheet here...\n\n'
+            'The QSS will be parsed and converted to an editable theme.\n'
+            'Colors and metrics will be extracted and can be modified.'
+        )
+        self._qss_paste_input.setLineWrapMode(QPlainTextEdit.NoWrap)
+        qss_paste_layout.addWidget(self._qss_paste_input)
+
+        qss_btn_layout = QHBoxLayout()
+        apply_qss_btn = QPushButton("Import QSS")
+        apply_qss_btn.setToolTip("Parse QSS and import as editable theme")
+        apply_qss_btn.clicked.connect(self._apply_pasted_qss)
+        qss_btn_layout.addWidget(apply_qss_btn)
+        save_qss_preset_btn = QPushButton("Import && Save as Preset")
+        save_qss_preset_btn.setToolTip("Parse QSS and save as a named editable preset")
+        save_qss_preset_btn.clicked.connect(self._save_qss_as_preset)
+        qss_btn_layout.addWidget(save_qss_preset_btn)
+        clear_qss_btn = QPushButton("Clear")
+        clear_qss_btn.clicked.connect(lambda: self._qss_paste_input.clear())
+        qss_btn_layout.addWidget(clear_qss_btn)
+        qss_btn_layout.addStretch()
+        qss_paste_layout.addLayout(qss_btn_layout)
+        layout.addWidget(qss_paste)
+
+        # Generated QSS preview
+        preview = self._make_editor_group("Generated QSS Preview")
         preview_layout = QVBoxLayout(preview)
         self._export_preview = QPlainTextEdit()
         self._export_preview.setReadOnly(True)
@@ -376,6 +433,11 @@ class ThemeEditorDialog(QDialog):
         preview_scroll.setWidget(self._preview)
         layout.addWidget(preview_scroll, 1)
         return wrapper
+
+    def _make_editor_group(self, title: str) -> QGroupBox:
+        group = QGroupBox(title)
+        group.setProperty("editorSection", True)
+        return group
 
     def _make_spinbox(self, minimum: int, maximum: int) -> QSpinBox:
         spin = QSpinBox()
@@ -471,6 +533,76 @@ class ThemeEditorDialog(QDialog):
         css = self._engine.generate_stylesheet()
         Path(filename).write_text(css, encoding="utf-8")
 
+    def _apply_pasted_json(self) -> None:
+        """Apply JSON theme pasted into the text area."""
+        json_text = self._json_paste_input.toPlainText().strip()
+        if not json_text:
+            QMessageBox.warning(self, "Empty Input", "Please paste a JSON theme first.")
+            return
+        if not self._engine.import_from_json(json_text):
+            QMessageBox.warning(
+                self,
+                "Invalid JSON",
+                "Could not parse the JSON theme.\n\n"
+                "Make sure it contains valid JSON with 'colors', 'metrics', "
+                "and 'effects' sections.",
+            )
+            return
+        self._engine.save_current()
+        self._refresh_preset_combo()
+        QMessageBox.information(self, "Success", "JSON theme applied successfully.")
+
+    def _apply_pasted_qss(self) -> None:
+        """Parse QSS and apply as editable theme."""
+        qss_text = self._qss_paste_input.toPlainText().strip()
+        if not qss_text:
+            QMessageBox.warning(self, "Empty Input", "Please paste a QSS stylesheet first.")
+            return
+        if not self._engine.import_from_qss(qss_text):
+            QMessageBox.warning(
+                self,
+                "Parse Failed",
+                "Could not parse the QSS stylesheet.",
+            )
+            return
+        self._engine.save_current()
+        self._refresh_preset_combo()
+        QMessageBox.information(
+            self,
+            "QSS Imported",
+            "QSS parsed and imported as editable theme.\n\n"
+            "You can now modify colors and metrics with the editor.",
+        )
+
+    def _save_qss_as_preset(self) -> None:
+        """Parse QSS and save as a named editable preset."""
+        qss_text = self._qss_paste_input.toPlainText().strip()
+        if not qss_text:
+            QMessageBox.warning(self, "Empty Input", "Please paste a QSS stylesheet first.")
+            return
+        name, ok = QInputDialog.getText(self, "Save QSS as Preset", "Preset name:")
+        if not ok or not name.strip():
+            return
+        # Parse QSS and save as regular editable preset
+        if not self._engine.import_from_qss(qss_text, name.strip()):
+            QMessageBox.warning(self, "Parse Failed", "Could not parse the QSS stylesheet.")
+            return
+        self._engine.save_custom_preset(name.strip())
+        self._engine.save_current()
+        self._refresh_preset_combo()
+        QMessageBox.information(
+            self,
+            "Saved",
+            f"QSS parsed and saved as editable preset '{name.strip()}'.",
+        )
+
+    def _reset_to_engine_stylesheet(self) -> None:
+        """Reset to the theme engine's managed stylesheet and clear saved raw QSS."""
+        self._engine.clear_raw_stylesheet()
+        QMessageBox.information(
+            self, "Reset", "Theme engine stylesheet restored."
+        )
+
     def _refresh_preset_combo(self) -> None:
         current = self._engine.current_theme
         presets = self._engine.get_preset_names()
@@ -516,6 +648,7 @@ class ThemeEditorDialog(QDialog):
             self._export_preview.setPlainText(self._engine.generate_stylesheet())
             self._undo_btn.setEnabled(self._engine.can_undo())
             self._redo_btn.setEnabled(self._engine.can_redo())
+            self._preview.apply_effects(state.effects)
 
             if not self._live_preview.isChecked():
                 self._preview.setStyleSheet(self._engine.generate_stylesheet())

@@ -6,7 +6,8 @@ Purpose
 Key elements
 - Buttons, inputs, lists, progress, and misc widgets.
 - Uses `gitStatus` and `diffViewer` properties for targeted styles.
+- Applies shadow effects from ThemeEngine for visual checks.
 
 Flowchart: ThemePreview
 
-[ThemeEngine update] -> [preview widgets restyled]
+[ThemeEngine update] -> [ThemePreview.apply_effects] -> [preview widgets restyled]
