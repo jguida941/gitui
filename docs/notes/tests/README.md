@@ -1,0 +1,23 @@
+# Test Notes Index
+
+- command_queue.md: What CommandQueue tests assert.
+- command_runner.md: What CommandRunner tests assert.
+- conftest.md: Shared fixtures used by tests.
+- controller.md: What RepoController tests assert.
+- errors.md: What error class tests assert.
+- git_runner.md: What GitRunner tests assert.
+- git_service.md: What GitService tests assert.
+- main.md: What app.main tests assert.
+- parse_branches.md: What parse_branches tests assert.
+- parse_conflicts.md: What parse_conflicts tests assert.
+- parse_diff.md: What parse_diff tests assert.
+- parse_log.md: What parse_log tests assert.
+- parse_remotes.md: What parse_remotes tests assert.
+- parse_status.md: What parse_status tests assert.
+- parse_stash.md: What parse_stash tests assert.
+- parse_tags.md: What parse_tags tests assert.
+- parsers_property.md: Property tests for parsers.
+- qt_compat.md: Qt compatibility tests.
+- repo_state.md: RepoState setter tests.
+- scripts.md: Script tests (coverage + smoke).
+- ui_placeholders.md: UI placeholder tests.

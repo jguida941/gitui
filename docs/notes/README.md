@@ -1,0 +1,74 @@
+# Notes Index
+
+Component notes
+- package_app_init.md: app package marker.
+- package_exec_init.md: exec package marker.
+- package_ui_init.md: ui package marker.
+- command_models.md: CommandSpec/RunHandle/CommandResult data models.
+- command_runner.md: CommandRunner flow + signal lifecycle.
+- command_queue.md: CommandQueue rules and flow.
+- errors.md: Typed error meanings and flow.
+- fake_command_runner.md: Fake runner purpose and flow.
+- git_runner.md: GitRunner defaults and delegation.
+- git_service.md: Intent layer overview.
+- core_command_audit.md: Manual audit order for core commands.
+- insights.md: Git+ analytics plan and data flow.
+- repo_controller.md: Controller intent flow.
+- repo_state.md: Repo state fields and signals.
+- qt_compat.md: Qt import fallback for tests without PySide6.
+- models.md: Shared dataclasses for parsing and UI.
+- parse_diff.md: Diff parsing scope (raw for now).
+- parse_branches.md: Branch list parsing plan.
+- parse_conflicts.md: Conflict list parsing plan.
+- parse_log.md: Log parsing plan with separators.
+- parse_status.md: Status parsing plan for porcelain v2.
+- parse_stash.md: Stash list parsing plan with separators.
+- parse_tags.md: Tag list parsing plan.
+- parse_remotes.md: Remote list parsing plan.
+- main_entry.md: app/main.py placeholder behavior.
+- utils_logging.md: Logging setup helper.
+- utils_paths.md: Path normalization helper.
+- utils_settings.md: In-memory settings store.
+- ui_branches_panel.md: Placeholder branch panel.
+- ui_commit_panel.md: Placeholder commit panel.
+- ui_console_widget.md: Placeholder console widget.
+- ui_diff_viewer.md: Placeholder diff viewer.
+- ui_log_panel.md: Placeholder log panel.
+- ui_main_window.md: Placeholder main window.
+- ui_repo_picker.md: Placeholder repo picker.
+- ui_status_panel.md: Placeholder status panel.
+- ui_stash_panel.md: Placeholder for stash UI panel.
+- ui_tags_panel.md: Placeholder for tags UI panel.
+- ui_remotes_panel.md: Placeholder for remotes UI panel.
+- ui_confirm_dialog.md: Placeholder confirm dialog.
+- ui_error_dialog.md: Placeholder error dialog.
+- run_mutation.md: Mutmut wrapper script.
+- manual_smoke.md: CLI smoke test script for CommandRunner.
+- coverage_check.md: Per-file coverage gate script.
+- testing_checklist.md: Manual test checklist for CLI + GUI.
+- testing.md: Test configuration and import path.
+- adr_scope.md: Summary of added ADRs.
+
+Test notes (docs/notes/tests/)
+- tests/README.md: Index for test notes.
+- tests/command_runner.md: What CommandRunner tests assert.
+- tests/conftest.md: Shared fixtures used by tests.
+- tests/parse_branches.md: What parse_branches tests assert.
+- tests/parse_conflicts.md: What parse_conflicts tests assert.
+- tests/parse_diff.md: What parse_diff tests assert.
+- tests/parse_log.md: What parse_log tests assert.
+- tests/parse_status.md: What parse_status tests assert.
+- tests/parse_stash.md: What parse_stash tests assert.
+- tests/parse_tags.md: What parse_tags tests assert.
+- tests/parse_remotes.md: What parse_remotes tests assert.
+- tests/parsers_property.md: Property tests for parsers.
+- tests/git_service.md: What GitService tests assert.
+- tests/git_runner.md: What GitRunner tests assert.
+- tests/controller.md: What RepoController tests assert.
+- tests/command_queue.md: What CommandQueue tests assert.
+- tests/errors.md: What error class tests assert.
+- tests/main.md: What app.main tests assert.
+- tests/qt_compat.md: Qt compatibility tests.
+- tests/repo_state.md: RepoState setter tests.
+- tests/scripts.md: Script tests (coverage + smoke).
+- tests/ui_placeholders.md: UI placeholder tests.
