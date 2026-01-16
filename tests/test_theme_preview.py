@@ -10,8 +10,8 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PySide6.QtWidgets import QApplication, QGroupBox
 
-from app.ui.theme_engine import ThemeEffects
-from app.ui.theme_preview import ThemePreview
+from app.ui.theme.theme_engine import ThemeEffects
+from app.ui.theme.theme_preview import ThemePreview
 
 app = QApplication.instance() or QApplication([])
 

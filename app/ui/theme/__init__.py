@@ -8,7 +8,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from app.ui.theme_engine import PRESETS, ThemeColors, ThemeMetrics, get_engine
+from .theme_engine import PRESETS, ThemeColors, ThemeMetrics, get_engine
 
 # Legacy constants for modules that still read defaults/presets directly.
 DEFAULT_COLORS = ThemeColors().to_dict()

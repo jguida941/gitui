@@ -89,6 +89,7 @@ All notable changes to this project will be documented here.
 - MainWindow now uses tabbed panels and a toolbar layout.
 - Theme initialization moved to ThemeEngine.
 - Discard actions now prompt for confirmation and error dialogs show command details.
+- Theme modules now live under `app/ui/theme/` with updated imports.
 
 ### Fixed
 - Ruff import cleanup in command models.

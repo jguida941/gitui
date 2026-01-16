@@ -15,7 +15,7 @@ from app.ui.commit_panel import CommitPanel
 from app.ui.console_widget import ConsoleWidget
 from app.ui.dialogs.confirm_dialog import ConfirmDialog
 from app.ui.dialogs.error_dialog import ErrorDialog
-from app.ui.dialogs.theme_editor_dialog import ThemeEditorDialog
+from app.ui.theme.theme_editor_dialog import ThemeEditorDialog
 from app.ui.diff_viewer import DiffViewer
 from app.ui.git_toolbar import GitToolbar
 from app.ui.log_panel import LogPanel

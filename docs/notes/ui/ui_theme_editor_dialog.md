@@ -1,6 +1,7 @@
 # ui_theme_editor_dialog Notes
 
 Purpose
+- Location: app/ui/theme/theme_editor_dialog.py
 - Full theme editor UI with presets, controls, and live preview.
 - Emits no git commands; it only drives ThemeEngine state.
 

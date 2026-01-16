@@ -4,7 +4,7 @@ import pytest
 
 pytest.importorskip("PySide6")
 
-from app.ui.theme_engine import ThemeEngine
+from app.ui.theme.theme_engine import ThemeEngine
 
 
 def test_theme_engine_apply_and_override() -> None:

@@ -27,7 +27,8 @@ from PySide6.QtWidgets import (
     QGraphicsDropShadowEffect,
 )
 
-from app.ui.theme_engine import ThemeEffects
+from .theme_engine import ThemeEffects
+
 
 class ThemePreview(QWidget):
     """Compact preview gallery that exercises common widgets."""

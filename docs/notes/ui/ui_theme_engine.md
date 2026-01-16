@@ -1,6 +1,7 @@
 # ui_theme_engine Notes
 
 Purpose
+- Location: app/ui/theme/theme_engine.py
 - Central theme state (colors/metrics/effects) with presets + undo/redo.
 - Generates the Qt stylesheet and applies it to the app.
 - Persists current theme and custom presets in QSettings.

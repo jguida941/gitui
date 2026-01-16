@@ -2,6 +2,8 @@
 
 A PySide6 desktop UI on top of the git CLI. The backend stays CLI-native for full parity; the UI is a thin, themeable dashboard.
 
+![GitUI Screenshot](docs/images/gitui-screenshot.png)
+
 ## Quick start
 
 - Install deps: `pip install .[dev]`

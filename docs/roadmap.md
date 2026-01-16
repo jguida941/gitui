@@ -48,6 +48,12 @@ Why this plan
       dialogs/
         confirm_dialog.py
         error_dialog.py
+      theme/
+        __init__.py
+        theme_controls.py
+        theme_engine.py
+        theme_preview.py
+        theme_editor_dialog.py
     core/
       models.py        # dataclasses: RepoStatus, FileChange, Commit, etc.
       repo_state.py    # RepoState snapshot + signals

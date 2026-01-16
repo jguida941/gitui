@@ -1,6 +1,7 @@
 # ui_theme Notes
 
 Purpose
+- Location: app/ui/theme/__init__.py
 - Compatibility wrapper for legacy theme API calls.
 - Delegates to ThemeEngine for real work.
 

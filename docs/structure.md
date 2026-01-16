@@ -47,15 +47,16 @@ Current tree (placeholder scaffold):
 │   │   ├── status_panel.py
 │   │   ├── stash_panel.py
 │   │   ├── tags_panel.py
-│   │   ├── theme.py
-│   │   ├── theme_controls.py
-│   │   ├── theme_engine.py
-│   │   ├── theme_preview.py
+│   │   ├── theme
+│   │   │   ├── __init__.py
+│   │   │   ├── theme_controls.py
+│   │   │   ├── theme_editor_dialog.py
+│   │   │   ├── theme_engine.py
+│   │   │   └── theme_preview.py
 │   │   └── dialogs
 │   │       ├── confirm_dialog.py
 │   │       ├── error_dialog.py
-│   │       ├── settings_dialog.py
-│   │       └── theme_editor_dialog.py
+│   │       └── settings_dialog.py
 │   └── utils
 │       ├── logging.py
 │       ├── paths.py

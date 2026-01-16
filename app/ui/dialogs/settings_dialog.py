@@ -1,7 +1,7 @@
 """Legacy wrapper for the ThemeEditorDialog."""
 from __future__ import annotations
 
-from app.ui.dialogs.theme_editor_dialog import ThemeEditorDialog
+from app.ui.theme.theme_editor_dialog import ThemeEditorDialog
 
 
 class SettingsDialog(ThemeEditorDialog):

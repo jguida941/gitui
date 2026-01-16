@@ -30,7 +30,7 @@ def main(argv: list[str] | None = None) -> int:
 
     from PySide6.QtWidgets import QApplication
     from app.ui.main_window import MainWindow
-    from app.ui.theme_engine import init_theme
+    from app.ui.theme.theme_engine import init_theme
 
     app = QApplication(sys.argv)
 

@@ -11,7 +11,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 from PySide6.QtGui import QColor
 from PySide6.QtWidgets import QApplication, QColorDialog
 
-from app.ui.theme_controls import ColorPickerButton
+from app.ui.theme.theme_controls import ColorPickerButton
 
 app = QApplication.instance() or QApplication([])
 

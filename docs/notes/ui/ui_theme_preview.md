@@ -1,6 +1,7 @@
 # ui_theme_preview Notes
 
 Purpose
+- Location: app/ui/theme/theme_preview.py
 - Provide a gallery of widgets to validate theme changes.
 
 Key elements

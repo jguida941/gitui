@@ -1,6 +1,7 @@
 # ui_theme_controls Notes
 
 Purpose
+- Location: app/ui/theme/theme_controls.py
 - Reusable controls for the theme editor (color picker button).
 
 Key elements

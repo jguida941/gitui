@@ -10,7 +10,7 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 from PySide6.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDialog
 
-from app.ui.dialogs.theme_editor_dialog import ThemeEditorDialog
+from app.ui.theme.theme_editor_dialog import ThemeEditorDialog
 
 app = QApplication.instance() or QApplication([])
 

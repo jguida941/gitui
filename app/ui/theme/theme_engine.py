@@ -5,7 +5,7 @@ A complete theming system extracted and adapted from WebHookCliEditor.
 Supports real-time preview, undo/redo, presets, and full visual customization.
 
 Usage:
-    from app.ui.theme_engine import ThemeEngine, get_engine
+    from app.ui.theme.theme_engine import ThemeEngine, get_engine
 
     engine = get_engine()
     engine.apply_preset("Cyberpunk")

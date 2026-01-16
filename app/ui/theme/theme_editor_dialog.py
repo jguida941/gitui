@@ -27,9 +27,9 @@ from PySide6.QtWidgets import (
     QSplitter,
 )
 
-from app.ui.theme_controls import ColorPickerButton
-from app.ui.theme_engine import PRESETS, ThemeEngine, get_engine
-from app.ui.theme_preview import ThemePreview
+from .theme_controls import ColorPickerButton
+from .theme_engine import PRESETS, ThemeEngine, get_engine
+from .theme_preview import ThemePreview
 
 
 class ThemeEditorDialog(QDialog):
