@@ -9,6 +9,7 @@
 - git_runner.md: What GitRunner tests assert.
 - git_service.md: What GitService tests assert.
 - main.md: What app.main tests assert.
+- main_window.md: MainWindow error handling tests.
 - parse_branches.md: What parse_branches tests assert.
 - parse_conflicts.md: What parse_conflicts tests assert.
 - parse_diff.md: What parse_diff tests assert.

@@ -5,6 +5,7 @@ from PySide6.QtGui import QAction, QKeySequence
 from PySide6.QtWidgets import QMainWindow, QSplitter, QTabWidget, QVBoxLayout, QWidget
 
 from app.core.controller import RepoController
+from app.core.errors import CommandFailed
 from app.core.repo_state import RepoState
 from app.exec.command_runner import CommandRunner
 from app.git.git_runner import GitRunner
@@ -226,6 +227,10 @@ class MainWindow(QMainWindow):
         if self._state.last_error and self._state.last_error != self._last_error:
             self._console.append_event(f"error: {self._state.last_error}")
             self.statusBar().showMessage(str(self._state.last_error))
+            if isinstance(self._state.last_error, CommandFailed):
+                if self._maybe_handle_push_no_upstream(self._state.last_error):
+                    self._last_error = self._state.last_error
+                    return
             ErrorDialog.show_error(self, self._state.last_error)
             self._last_error = self._state.last_error
         elif self._state.last_error is None:
@@ -308,3 +313,43 @@ class MainWindow(QMainWindow):
         ):
             return
         self._controller.discard(paths)
+
+    def _maybe_handle_push_no_upstream(self, error: CommandFailed) -> bool:
+        """Offer to set upstream and re-push when git reports missing upstream."""
+        stderr = error.stderr.decode("utf-8", errors="replace").lower()
+        if "no upstream branch" not in stderr:
+            return False
+        if "push" not in error.command_args:
+            return False
+
+        branch = self._current_branch_name()
+        if not branch:
+            return False
+        remote = self._default_remote()
+
+        if not ConfirmDialog.ask(
+            self,
+            "No Upstream",
+            f"Branch '{branch}' has no upstream. Set upstream to "
+            f"'{remote}/{branch}' and push now?",
+            confirm_text="Set Upstream & Push",
+        ):
+            return True
+
+        self._controller.push(set_upstream=True, remote=remote, branch=branch)
+        return True
+
+    def _current_branch_name(self) -> str | None:
+        """Get the currently checked-out branch name, if known."""
+        if self._state.status and self._state.status.branch:
+            return self._state.status.branch.name
+        for branch in self._state.branches or []:
+            if branch.is_current:
+                return branch.name
+        return None
+
+    def _default_remote(self) -> str:
+        """Pick a default remote for upstream setup."""
+        if self._state.remotes:
+            return self._state.remotes[0].name
+        return "origin"

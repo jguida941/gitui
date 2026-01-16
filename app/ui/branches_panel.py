@@ -110,6 +110,9 @@ class BranchesPanel(QWidget):
         self._branches = list(branches or [])
         self._tree.clear()
 
+        current_branch = self._branch_combo.currentText()
+        current_upstream = self._upstream_combo.currentText()
+
         for branch in self._branches:
             item = QTreeWidgetItem(
                 [
@@ -126,17 +129,24 @@ class BranchesPanel(QWidget):
         branch_names = [b.name for b in self._branches]
         self._branch_combo.clear()
         self._branch_combo.addItems(branch_names)
+        if current_branch in branch_names:
+            self._branch_combo.setCurrentText(current_branch)
 
         self._start_point_combo.clear()
         self._start_point_combo.addItems(["HEAD", *branch_names])
 
         self._rebuild_upstream(branch_names)
+        if current_upstream:
+            self._upstream_combo.setCurrentText(current_upstream)
 
     def set_remotes(self, remotes: list[str]) -> None:
         """Update the remotes used for upstream suggestions."""
         self._remotes = remotes
         branch_names = [b.name for b in self._branches]
+        current_upstream = self._upstream_combo.currentText()
         self._rebuild_upstream(branch_names)
+        if current_upstream:
+            self._upstream_combo.setCurrentText(current_upstream)
 
     def _rebuild_upstream(self, branch_names: list[str]) -> None:
         # Build upstream options from remotes + branch names for quick selection.

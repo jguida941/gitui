@@ -64,6 +64,7 @@ All notable changes to this project will be documented here.
 - Confirm and error dialogs for destructive actions and failures.
 - Launcher script (`scripts/run_gitui.py`) for clean app startup.
 - New UI/theme/dialog tests to keep per-file coverage green.
+- Push failure prompt for missing upstreams with automatic retry.
 
 ### Changed
 - Docs structure and agent contract for learning workflow.

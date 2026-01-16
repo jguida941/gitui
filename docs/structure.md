@@ -179,6 +179,7 @@ Current tree (placeholder scaffold):
     ├── test_git_runner.py
     ├── test_git_service.py
     ├── test_main.py
+    ├── test_main_window.py
     ├── test_parse_branches.py
     ├── test_parse_conflicts.py
     ├── test_parse_diff.py

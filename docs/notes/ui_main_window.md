@@ -4,11 +4,13 @@ Purpose
 - Compose the main layout: repo picker, tabs, diff viewer, console.
 - Wire UI signals to RepoController intents and CommandRunner output.
 - Surface errors via status bar + error dialog.
+- Offer a one-click fix for "no upstream" push failures.
 
 Key elements
 - GitToolbar provides one-click actions (refresh/stage/fetch/pull/push).
 - Left tabs host Changes (status + commit), Log, Branches, Stashes, Tags, Remotes.
 - Splitters keep the diff viewer and console adjustable.
+- Push failures with no upstream prompt to set upstream and retry.
 
 Flowchart: MainWindow
 
