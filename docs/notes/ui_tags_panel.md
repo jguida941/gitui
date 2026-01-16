@@ -1,11 +1,17 @@
 # ui_tags_panel Notes
 
 Purpose
-- Placeholder for the tags UI panel.
+- Display tags and provide create/delete/push actions.
+- Offer a remote dropdown for push commands.
 
-Flowchart: stub
+Key elements
+- Tree shows tag names; combo mirrors selection.
+- Create row supports optional ref input.
+- Push row selects remote and emits intent signals.
 
-[TagsPanel placeholder]
+Flowchart: TagsPanel
+
+[set_tags] -> [populate tree + combo]
         |
         v
-[No logic yet; wiring comes later]
+[action click] -> [emit tag intent]

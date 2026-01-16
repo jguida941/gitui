@@ -11,6 +11,8 @@ class DiffViewer(QWidget):
         self._view = QPlainTextEdit()
         self._view.setReadOnly(True)
         self._view.setLineWrapMode(QPlainTextEdit.NoWrap)
+        # Tag this widget so the theme engine can target diff styling.
+        self._view.setProperty("diffViewer", True)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)

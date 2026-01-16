@@ -39,6 +39,7 @@ Current tree (placeholder scaffold):
 │   │   ├── commit_panel.py
 │   │   ├── console_widget.py
 │   │   ├── diff_viewer.py
+│   │   ├── git_toolbar.py
 │   │   ├── log_panel.py
 │   │   ├── main_window.py
 │   │   ├── remotes_panel.py
@@ -46,9 +47,15 @@ Current tree (placeholder scaffold):
 │   │   ├── status_panel.py
 │   │   ├── stash_panel.py
 │   │   ├── tags_panel.py
+│   │   ├── theme.py
+│   │   ├── theme_controls.py
+│   │   ├── theme_engine.py
+│   │   ├── theme_preview.py
 │   │   └── dialogs
 │   │       ├── confirm_dialog.py
-│   │       └── error_dialog.py
+│   │       ├── error_dialog.py
+│   │       ├── settings_dialog.py
+│   │       └── theme_editor_dialog.py
 │   └── utils
 │       ├── logging.py
 │       ├── paths.py
@@ -69,6 +76,7 @@ Current tree (placeholder scaffold):
 │   │   └── README.md
 │   ├── agents.md
 │   ├── notes
+│   │   ├── README.md
 │   │   ├── adr_scope.md
 │   │   ├── command_models.md
 │   │   ├── command_queue.md
@@ -94,18 +102,25 @@ Current tree (placeholder scaffold):
 │   │   ├── parse_stash.md
 │   │   ├── parse_tags.md
 │   │   ├── qt_compat.md
+│   │   ├── run_gitui.md
 │   │   ├── run_mutation.md
 │   │   ├── ui_branches_panel.md
 │   │   ├── ui_commit_panel.md
 │   │   ├── ui_console_widget.md
 │   │   ├── ui_diff_viewer.md
+│   │   ├── ui_git_toolbar.md
 │   │   ├── ui_log_panel.md
 │   │   ├── ui_main_window.md
-│   │   ├── ui_remotes_panel.md
 │   │   ├── ui_repo_picker.md
-│   │   ├── ui_stash_panel.md
 │   │   ├── ui_status_panel.md
+│   │   ├── ui_stash_panel.md
 │   │   ├── ui_tags_panel.md
+│   │   ├── ui_remotes_panel.md
+│   │   ├── ui_theme.md
+│   │   ├── ui_theme_controls.md
+│   │   ├── ui_theme_editor_dialog.md
+│   │   ├── ui_theme_engine.md
+│   │   ├── ui_theme_preview.md
 │   │   ├── ui_confirm_dialog.md
 │   │   ├── ui_error_dialog.md
 │   │   ├── repo_controller.md
@@ -116,10 +131,12 @@ Current tree (placeholder scaffold):
 │   │   ├── testing_checklist.md
 │   │   ├── testing.md
 │   │   ├── tests
+│   │   │   ├── README.md
 │   │   │   ├── command_queue.md
 │   │   │   ├── command_runner.md
 │   │   │   ├── conftest.md
 │   │   │   ├── controller.md
+│   │   │   ├── dialogs.md
 │   │   │   ├── errors.md
 │   │   │   ├── git_runner.md
 │   │   │   ├── git_service.md
@@ -136,8 +153,12 @@ Current tree (placeholder scaffold):
 │   │   │   ├── qt_compat.md
 │   │   │   ├── repo_state.md
 │   │   │   ├── scripts.md
-│   │   │   ├── ui_placeholders.md
-│   │   │   └── README.md
+│   │   │   ├── theme_controls.md
+│   │   │   ├── theme_editor_dialog.md
+│   │   │   ├── theme_engine.md
+│   │   │   ├── theme_preview.md
+│   │   │   ├── ui_panels.md
+│   │   │   └── ui_placeholders.md
 │   │   └── README.md
 │   ├── roadmap.md
 │   └── structure.md
@@ -146,12 +167,14 @@ Current tree (placeholder scaffold):
 ├── scripts
 │   ├── check_coverage.py
 │   ├── manual_smoke.py
-│   └── run-mutation.sh
+│   ├── run-mutation.sh
+│   └── run_gitui.py
 └── tests
     ├── conftest.py
     ├── test_command_runner.py
     ├── test_command_queue.py
     ├── test_controller.py
+    ├── test_dialogs.py
     ├── test_errors.py
     ├── test_git_runner.py
     ├── test_git_service.py
@@ -168,9 +191,14 @@ Current tree (placeholder scaffold):
     ├── test_qt_compat.py
     ├── test_repo_state.py
     ├── test_scripts.py
+    ├── test_theme_controls.py
+    ├── test_theme_editor_dialog.py
+    ├── test_theme_engine.py
+    ├── test_theme_preview.py
+    ├── test_ui_panels.py
     └── test_ui_placeholders.py
 ```
 
 Notes
-- Many files are placeholders for tracking and modularization.
-- UI logic still starts only after Phase 0 backend is in place.
+- UI components are wired for core workflows; advanced features remain in progress.
+- Placeholder sections remain for future expansion.

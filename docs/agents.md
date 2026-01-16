@@ -8,8 +8,8 @@ This project builds a PySide6 Git UI on top of the git CLI. Keep these rules:
 - Do not use subprocess for git.
 - Prefer machine-readable git output when available.
 - Avoid cross-phase refactors unless explicitly planned.
-- Phase 0 is backend-only for implementation; UI files may exist as empty placeholders for tracking only.
-- Do not add UI logic until CommandRunner + GitService + tests exist.
+- Phase 0 started backend-only; UI wiring is allowed now but must honor the intent boundary.
+- Only add UI logic once the underlying intent + tests exist.
 - Do not add new dependencies without an ADR.
 - Placeholder files exist for modularization and tracking; adjust structure if it improves maintainability.
 - If structure changes, update docs/roadmap.md and docs/structure.md.

@@ -4,6 +4,7 @@
 - command_runner.md: What CommandRunner tests assert.
 - conftest.md: Shared fixtures used by tests.
 - controller.md: What RepoController tests assert.
+- dialogs.md: Confirm/Error dialog tests.
 - errors.md: What error class tests assert.
 - git_runner.md: What GitRunner tests assert.
 - git_service.md: What GitService tests assert.
@@ -20,4 +21,9 @@
 - qt_compat.md: Qt compatibility tests.
 - repo_state.md: RepoState setter tests.
 - scripts.md: Script tests (coverage + smoke).
+- theme_controls.md: Theme control widgets tests.
+- theme_editor_dialog.md: Theme editor dialog tests.
+- theme_engine.md: ThemeEngine state tests.
+- theme_preview.md: Theme preview widget tests.
+- ui_panels.md: UI panel behavior tests.
 - ui_placeholders.md: UI placeholder tests.

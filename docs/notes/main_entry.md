@@ -4,6 +4,7 @@ Purpose
 - Launch the Qt application and wire the core controller stack.
 - Provide a `--no-gui` path for tests and automation.
 - Allow `--repo` to open a path on startup.
+- Initialize the ThemeEngine before showing the window.
 
 Flowchart: main()
 
@@ -15,7 +16,7 @@ Flowchart: main()
   yes       no
    |         \
    v          v
-[return 0] [QApplication + MainWindow]
+[return 0] [QApplication + init_theme]
                |
                v
-       [show + exec]
+       [MainWindow -> show + exec]

@@ -1,25 +1,13 @@
 # ui_console_widget Notes
 
 Purpose
-- Display command output and lifecycle events for transparency.
-- Keep a simple scrollback log the user can read.
+- Provide a scrollback console for command stdout/stderr and events.
+- Keep output readable with stable prefixes.
 
-Flowchart: append_stdout
+Key elements
+- `consoleWidget` property lets the theme target monospace styling.
+- Appends lines and auto-scrolls to the end.
 
-[stdout bytes]
-        |
-        v
-[decode + prefix lines]
-        |
-        v
-[append to QPlainTextEdit]
+Flowchart: ConsoleWidget
 
-Flowchart: append_event
-
-[command start/finish]
-        |
-        v
-[format event line]
-        |
-        v
-[append to QPlainTextEdit]
+[command output] -> [append prefixed line] -> [scroll to end]

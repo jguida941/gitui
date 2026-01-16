@@ -1,0 +1,21 @@
+{
+  "export_info": {
+    "timestamp": "2025-07-03T02:21:09.404521",
+    "format": "qss",
+    "output_directory": "/Users/jguida941/Desktop/untitled folder/demo_themes",
+    "total_themes": 8,
+    "successful_exports": 8,
+    "failed_exports": 0
+  },
+  "exported_files": [
+    "demo_themes/dark_sci_fi.qss",
+    "demo_themes/light_modern.qss",
+    "demo_themes/material_dark.qss",
+    "demo_themes/material_light.qss",
+    "demo_themes/cyberpunk.qss",
+    "demo_themes/minimalist.qss",
+    "demo_themes/corporate_blue.qss",
+    "demo_themes/nature_green.qss"
+  ],
+  "errors": []
+}

@@ -1,14 +1,14 @@
 # tests_ui_placeholders Notes
 
 Purpose
-- Ensure UI widgets (placeholders + wired components) construct with Qt.
+- Ensure UI widgets construct with a QApplication in place.
 
 Flowchart: test_ui_placeholders_construct
 
 [ensure QApplication exists]
         |
         v
-[instantiate UI classes]
+[construct UI widgets]
         |
         v
-[assert class types]
+[assert instance created]

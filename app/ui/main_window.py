@@ -1,17 +1,28 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
-from PySide6.QtWidgets import QMainWindow, QSplitter, QVBoxLayout, QWidget
+from PySide6.QtGui import QAction, QKeySequence
+from PySide6.QtWidgets import QMainWindow, QSplitter, QTabWidget, QVBoxLayout, QWidget
 
 from app.core.controller import RepoController
 from app.core.repo_state import RepoState
 from app.exec.command_runner import CommandRunner
 from app.git.git_runner import GitRunner
 from app.git.git_service import GitService
+from app.ui.branches_panel import BranchesPanel
+from app.ui.commit_panel import CommitPanel
 from app.ui.console_widget import ConsoleWidget
+from app.ui.dialogs.confirm_dialog import ConfirmDialog
+from app.ui.dialogs.error_dialog import ErrorDialog
+from app.ui.dialogs.theme_editor_dialog import ThemeEditorDialog
 from app.ui.diff_viewer import DiffViewer
+from app.ui.git_toolbar import GitToolbar
+from app.ui.log_panel import LogPanel
+from app.ui.remotes_panel import RemotesPanel
 from app.ui.repo_picker import RepoPicker
 from app.ui.status_panel import StatusPanel
+from app.ui.stash_panel import StashPanel
+from app.ui.tags_panel import TagsPanel
 
 
 class MainWindow(QMainWindow):
@@ -36,9 +47,18 @@ class MainWindow(QMainWindow):
 
         self._repo_picker = RepoPicker()
         self._status_panel = StatusPanel()
+        self._commit_panel = CommitPanel()
+        self._branches_panel = BranchesPanel()
+        self._log_panel = LogPanel()
+        self._stash_panel = StashPanel()
+        self._tags_panel = TagsPanel()
+        self._remotes_panel = RemotesPanel()
         self._diff_viewer = DiffViewer()
         self._console = ConsoleWidget()
+        self._toolbar = GitToolbar()
+        self._tabs = QTabWidget()
 
+        self._setup_menu()
         self._setup_layout()
         self._wire_events()
         self._refresh_from_state()
@@ -51,6 +71,45 @@ class MainWindow(QMainWindow):
         controller = RepoController(service)
         return controller, runner
 
+    def _setup_menu(self) -> None:
+        """Create the application menu bar."""
+        menubar = self.menuBar()
+
+        # File menu
+        file_menu = menubar.addMenu("&File")
+
+        open_action = QAction("&Open Repository...", self)
+        open_action.setShortcut(QKeySequence.StandardKey.Open)
+        open_action.triggered.connect(self._repo_picker.browse_repo)
+        file_menu.addAction(open_action)
+
+        file_menu.addSeparator()
+
+        settings_action = QAction("&Theme Editor...", self)
+        settings_action.setShortcut(QKeySequence("Ctrl+,"))
+        settings_action.triggered.connect(self._open_settings)
+        file_menu.addAction(settings_action)
+
+        file_menu.addSeparator()
+
+        quit_action = QAction("&Quit", self)
+        quit_action.setShortcut(QKeySequence.StandardKey.Quit)
+        quit_action.triggered.connect(self.close)
+        file_menu.addAction(quit_action)
+
+        # View menu
+        view_menu = menubar.addMenu("&View")
+
+        refresh_action = QAction("&Refresh", self)
+        refresh_action.setShortcut(QKeySequence.StandardKey.Refresh)
+        refresh_action.triggered.connect(self._controller.refresh_status)
+        view_menu.addAction(refresh_action)
+
+    def _open_settings(self) -> None:
+        """Open the theme editor dialog."""
+        dialog = ThemeEditorDialog(self)
+        dialog.exec()
+
     def _setup_layout(self) -> None:
         """Compose the main window layout with splitters."""
         central = QWidget()
@@ -58,10 +117,30 @@ class MainWindow(QMainWindow):
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(8)
 
+        self.addToolBar(self._toolbar)
+
+        status_tab = QWidget()
+        status_layout = QVBoxLayout(status_tab)
+        status_layout.setContentsMargins(0, 0, 0, 0)
+        status_split = QSplitter(Qt.Vertical)
+        status_split.addWidget(self._status_panel)
+        status_split.addWidget(self._commit_panel)
+        status_split.setStretchFactor(0, 3)
+        status_split.setStretchFactor(1, 1)
+        status_layout.addWidget(status_split)
+
+        self._tabs.addTab(status_tab, "Changes")
+        self._tabs.addTab(self._log_panel, "Log")
+        self._tabs.addTab(self._branches_panel, "Branches")
+        self._tabs.addTab(self._stash_panel, "Stashes")
+        self._tabs.addTab(self._tags_panel, "Tags")
+        self._tabs.addTab(self._remotes_panel, "Remotes")
+
         main_split = QSplitter(Qt.Horizontal)
-        main_split.addWidget(self._status_panel)
+        main_split.addWidget(self._tabs)
         main_split.addWidget(self._diff_viewer)
-        main_split.setStretchFactor(1, 1)
+        main_split.setStretchFactor(0, 2)
+        main_split.setStretchFactor(1, 3)
 
         outer_split = QSplitter(Qt.Vertical)
         outer_split.addWidget(main_split)
@@ -79,6 +158,45 @@ class MainWindow(QMainWindow):
         """Connect UI signals to controller intents and runner output."""
         self._repo_picker.repo_opened.connect(self._controller.open_repo)
         self._status_panel.diff_requested.connect(self._controller.request_diff)
+        self._status_panel.stage_requested.connect(self._controller.stage)
+        self._status_panel.unstage_requested.connect(self._controller.unstage)
+        self._status_panel.discard_requested.connect(self._confirm_discard)
+        self._commit_panel.commit_requested.connect(self._controller.commit)
+
+        self._branches_panel.refresh_requested.connect(self._controller.refresh_branches)
+        self._branches_panel.switch_requested.connect(self._controller.switch_branch)
+        self._branches_panel.create_requested.connect(self._controller.create_branch)
+        self._branches_panel.delete_requested.connect(self._controller.delete_branch)
+        self._branches_panel.set_upstream_requested.connect(self._controller.set_upstream)
+
+        self._log_panel.refresh_requested.connect(self._controller.refresh_log)
+
+        self._stash_panel.refresh_requested.connect(self._controller.refresh_stashes)
+        self._stash_panel.save_requested.connect(self._controller.stash_save)
+        self._stash_panel.apply_requested.connect(self._controller.stash_apply)
+        self._stash_panel.pop_requested.connect(self._controller.stash_pop)
+        self._stash_panel.drop_requested.connect(self._controller.stash_drop)
+
+        self._tags_panel.refresh_requested.connect(self._controller.refresh_tags)
+        self._tags_panel.create_requested.connect(self._controller.create_tag)
+        self._tags_panel.delete_requested.connect(self._controller.delete_tag)
+        self._tags_panel.push_tag_requested.connect(self._controller.push_tag)
+        self._tags_panel.push_tags_requested.connect(self._controller.push_tags)
+
+        self._remotes_panel.refresh_requested.connect(self._controller.refresh_remotes)
+        self._remotes_panel.add_requested.connect(self._controller.add_remote)
+        self._remotes_panel.remove_requested.connect(self._controller.remove_remote)
+        self._remotes_panel.set_url_requested.connect(self._controller.set_remote_url)
+
+        self._toolbar.refresh_requested.connect(self._controller.refresh_status)
+        self._toolbar.stage_all_requested.connect(self._stage_all)
+        self._toolbar.unstage_all_requested.connect(self._unstage_all)
+        self._toolbar.discard_all_requested.connect(self._discard_all)
+        self._toolbar.fetch_requested.connect(self._controller.fetch)
+        self._toolbar.pull_requested.connect(self._controller.pull_ff_only)
+        self._toolbar.push_requested.connect(self._controller.push)
+
+        self._tabs.currentChanged.connect(self._on_tab_changed)
         self._state.state_changed.connect(self._refresh_from_state)
 
         # Log command lifecycle + output so users can see what git did.
@@ -91,7 +209,16 @@ class MainWindow(QMainWindow):
         """Update widgets when RepoState changes."""
         self._repo_picker.set_repo_path(self._state.repo_path)
         self._status_panel.set_status(self._state.status)
+        self._log_panel.set_commits(list(self._state.log or []))
+        self._branches_panel.set_branches(list(self._state.branches or []))
+        self._stash_panel.set_stashes(list(self._state.stashes or []))
+        self._tags_panel.set_tags(list(self._state.tags or []))
+        self._remotes_panel.set_remotes(list(self._state.remotes or []))
         self._diff_viewer.set_diff_text(self._state.diff_text)
+
+        remotes = [remote.name for remote in self._state.remotes or []]
+        self._branches_panel.set_remotes(remotes)
+        self._tags_panel.set_remotes(remotes)
 
         title_suffix = self._state.repo_path or "(no repo)"
         self.setWindowTitle(f"GitUI - {title_suffix}")
@@ -99,6 +226,7 @@ class MainWindow(QMainWindow):
         if self._state.last_error and self._state.last_error != self._last_error:
             self._console.append_event(f"error: {self._state.last_error}")
             self.statusBar().showMessage(str(self._state.last_error))
+            ErrorDialog.show_error(self, self._state.last_error)
             self._last_error = self._state.last_error
         elif self._state.last_error is None:
             self.statusBar().clearMessage()
@@ -119,3 +247,64 @@ class MainWindow(QMainWindow):
         command = " ".join(args) if args else "<command>"
         exit_code = getattr(cmd_result, "exit_code", "?")
         self._console.append_event(f"finish: {command} (exit {exit_code})")
+
+    def _on_tab_changed(self, index: int) -> None:
+        """Refresh data when a tab becomes active."""
+        widget = self._tabs.widget(index)
+        if widget is self._log_panel:
+            self._controller.refresh_log()
+        elif widget is self._branches_panel:
+            self._controller.refresh_branches()
+        elif widget is self._stash_panel:
+            self._controller.refresh_stashes()
+        elif widget is self._tags_panel:
+            self._controller.refresh_tags()
+        elif widget is self._remotes_panel:
+            self._controller.refresh_remotes()
+
+    def _stage_all(self) -> None:
+        """Stage all unstaged and untracked files."""
+        status = self._state.status
+        if not status:
+            return
+        paths = [f.path for f in status.unstaged] + [f.path for f in status.untracked]
+        if paths:
+            self._controller.stage(paths)
+
+    def _unstage_all(self) -> None:
+        """Unstage all staged files."""
+        status = self._state.status
+        if not status:
+            return
+        paths = [f.path for f in status.staged]
+        if paths:
+            self._controller.unstage(paths)
+
+    def _discard_all(self) -> None:
+        """Discard all unstaged changes (excluding untracked files)."""
+        status = self._state.status
+        if not status:
+            return
+        if not ConfirmDialog.ask(
+            self,
+            "Discard Changes",
+            "Discard all unstaged changes? This cannot be undone.",
+            confirm_text="Discard",
+        ):
+            return
+        paths = [f.path for f in status.unstaged]
+        if paths:
+            self._controller.discard(paths)
+
+    def _confirm_discard(self, paths: list[str]) -> None:
+        """Confirm before discarding selected changes."""
+        if not paths:
+            return
+        if not ConfirmDialog.ask(
+            self,
+            "Discard Changes",
+            f"Discard {len(paths)} selected change(s)? This cannot be undone.",
+            confirm_text="Discard",
+        ):
+            return
+        self._controller.discard(paths)

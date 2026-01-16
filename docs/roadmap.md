@@ -228,6 +228,26 @@ Phase 1 DoD
 - Fetch/pull/push works
 - Console logs every command with timestamps
 
+## Phase 1.2 - Theme Editor (UI customization)
+
+Purpose: allow users to change fonts, colors, metrics, and effects without code.
+
+Deliverables
+- ThemeEngine
+  - presets + custom save/load
+  - undo/redo stack
+  - QSS generation for the entire app
+- ThemeEditorDialog
+  - tabbed controls (colors/fonts/metrics/effects)
+  - import/export JSON/QSS
+  - live preview panel
+- ThemePreview widget gallery
+
+DoD
+- Theme Editor opens from menu
+- Presets apply instantly
+- Export JSON/QSS works
+
 ## Phase 1.5 - CommandQueue (optional but recommended)
 
 Purpose: prevent refresh fights and button spam.

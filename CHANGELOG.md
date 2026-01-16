@@ -56,6 +56,14 @@ All notable changes to this project will be documented here.
 - Tests for GitService runner property accessor.
 - Initial GUI wiring: MainWindow, RepoPicker, StatusPanel, DiffViewer, ConsoleWidget.
 - `--no-gui` option for the main entrypoint to keep tests headless.
+- ThemeEngine with presets, undo/redo, and QSS generation.
+- Theme editor dialog with live preview and import/export tooling.
+- Theme preview widget gallery and reusable theme controls.
+- Git toolbar with common action shortcuts.
+- Commit/branches/log/stash/tags/remotes panels wired to controller intents.
+- Confirm and error dialogs for destructive actions and failures.
+- Launcher script (`scripts/run_gitui.py`) for clean app startup.
+- New UI/theme/dialog tests to keep per-file coverage green.
 
 ### Changed
 - Docs structure and agent contract for learning workflow.
@@ -77,6 +85,9 @@ All notable changes to this project will be documented here.
 - Core command audit completed: all CLI commands produce expected machine-readable output.
 - Test coverage improved to 91% (above 90% threshold) for non-UI modules.
 - UI notes updated to document wiring and diff selection behavior.
+- MainWindow now uses tabbed panels and a toolbar layout.
+- Theme initialization moved to ThemeEngine.
+- Discard actions now prompt for confirmation and error dialogs show command details.
 
 ### Fixed
 - Ruff import cleanup in command models.

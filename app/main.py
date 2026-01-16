@@ -30,8 +30,13 @@ def main(argv: list[str] | None = None) -> int:
 
     from PySide6.QtWidgets import QApplication
     from app.ui.main_window import MainWindow
+    from app.ui.theme_engine import init_theme
 
     app = QApplication(sys.argv)
+
+    # Load saved theme preferences and apply stylesheet.
+    init_theme()
+
     controller, runner = build_controller()
     window = MainWindow(controller, runner)
 

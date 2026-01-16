@@ -15,6 +15,7 @@ from app.ui.commit_panel import CommitPanel
 from app.ui.console_widget import ConsoleWidget
 from app.ui.dialogs.confirm_dialog import ConfirmDialog
 from app.ui.dialogs.error_dialog import ErrorDialog
+from app.ui.dialogs.theme_editor_dialog import ThemeEditorDialog
 from app.ui.diff_viewer import DiffViewer
 from app.ui.log_panel import LogPanel
 from app.ui.main_window import MainWindow
@@ -28,23 +29,24 @@ app = QApplication.instance() or QApplication([])
 
 
 @pytest.mark.parametrize(
-    "cls",
+    "factory",
     [
-        MainWindow,
-        ConsoleWidget,
-        RepoPicker,
-        StatusPanel,
-        DiffViewer,
-        CommitPanel,
-        BranchesPanel,
-        LogPanel,
-        StashPanel,
-        TagsPanel,
-        RemotesPanel,
-        ConfirmDialog,
-        ErrorDialog,
+        lambda: MainWindow(),
+        lambda: ConsoleWidget(),
+        lambda: RepoPicker(),
+        lambda: StatusPanel(),
+        lambda: DiffViewer(),
+        lambda: CommitPanel(),
+        lambda: BranchesPanel(),
+        lambda: LogPanel(),
+        lambda: StashPanel(),
+        lambda: TagsPanel(),
+        lambda: RemotesPanel(),
+        lambda: ConfirmDialog("Confirm", "Proceed?"),
+        lambda: ErrorDialog(Exception("boom")),
+        lambda: ThemeEditorDialog(),
     ],
 )
-def test_ui_placeholders_construct(cls: type[object]) -> None:
-    instance = cls()
-    assert instance.__class__ is cls
+def test_ui_placeholders_construct(factory) -> None:
+    instance = factory()
+    assert instance is not None

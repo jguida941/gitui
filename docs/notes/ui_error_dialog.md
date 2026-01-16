@@ -1,11 +1,12 @@
 # ui_error_dialog Notes
 
 Purpose
-- Placeholder for error dialog.
+- Show command failures and parsing errors with details.
 
-Flowchart: stub
+Key elements
+- Summary line plus a detailed stdout/stderr block.
+- Handles `CommandFailed` specially to include command + exit code.
 
-[ErrorDialog placeholder]
-        |
-        v
-[No logic yet; wiring comes later]
+Flowchart: ErrorDialog
+
+[error raised] -> [format details] -> [show dialog]

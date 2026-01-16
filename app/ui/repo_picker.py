@@ -32,6 +32,10 @@ class RepoPicker(QWidget):
         """Update the text field when the controller accepts a path."""
         self._path_edit.setText(path or "")
 
+    def browse_repo(self) -> None:
+        """Open the directory picker dialog."""
+        self._browse()
+
     def _emit_open(self) -> None:
         """Emit the repo path when the user clicks Open."""
         path = self._path_edit.text().strip()

@@ -1,7 +1,15 @@
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal
-from PySide6.QtWidgets import QGroupBox, QListWidget, QListWidgetItem, QVBoxLayout, QWidget
+from PySide6.QtWidgets import (
+    QAbstractItemView,
+    QGroupBox,
+    QListWidget,
+    QListWidgetItem,
+    QMenu,
+    QVBoxLayout,
+    QWidget,
+)
 
 from app.core.models import FileChange, RepoStatus
 
@@ -10,6 +18,9 @@ class StatusPanel(QWidget):
     """Displays staged/unstaged/untracked status groups."""
 
     diff_requested = Signal(str, bool)
+    stage_requested = Signal(object)
+    unstage_requested = Signal(object)
+    discard_requested = Signal(object)
 
     def __init__(self) -> None:
         super().__init__()
@@ -40,6 +51,8 @@ class StatusPanel(QWidget):
             lambda: self._on_selection(self._conflicted_list, staged=False, allow_diff=False)
         )
 
+        self._wire_context_menus()
+
     def set_status(self, status: RepoStatus | None) -> None:
         """Populate lists based on the latest RepoStatus snapshot."""
         if status is None:
@@ -60,10 +73,71 @@ class StatusPanel(QWidget):
         """Create a labeled list group for a status bucket."""
         group = QGroupBox(title)
         list_widget = QListWidget()
+        list_widget.setSelectionMode(QAbstractItemView.SelectionMode.ExtendedSelection)
         layout = QVBoxLayout(group)
         layout.setContentsMargins(6, 6, 6, 6)
         layout.addWidget(list_widget)
         return group, list_widget
+
+    def _wire_context_menus(self) -> None:
+        """Attach right-click menus to each status list."""
+        menu_map = {
+            "staged": self._staged_list,
+            "unstaged": self._unstaged_list,
+            "untracked": self._untracked_list,
+            "conflicted": self._conflicted_list,
+        }
+        for status, widget in menu_map.items():
+            widget.setProperty("gitStatus", status)
+            widget.setContextMenuPolicy(Qt.CustomContextMenu)
+            widget.customContextMenuRequested.connect(
+                lambda pos, w=widget, s=status: self._show_context_menu(w, s, pos)
+            )
+
+    def _selected_paths(self, widget: QListWidget) -> list[str]:
+        """Extract selected file paths from a list widget."""
+        paths: list[str] = []
+        for item in widget.selectedItems():
+            path = item.data(Qt.UserRole)
+            if path:
+                paths.append(path)
+        return paths
+
+    def _show_context_menu(self, widget: QListWidget, status: str, pos) -> None:
+        """Build context menu entries based on status bucket."""
+        paths = self._selected_paths(widget)
+        if not paths:
+            return
+
+        menu = QMenu(self)
+        if status in {"unstaged", "untracked"}:
+            stage_action = menu.addAction("Stage")
+            diff_action = menu.addAction("View Diff")
+            discard_action = None
+            # Untracked files are removed via git clean, so we skip discard here.
+            if status == "unstaged":
+                discard_action = menu.addAction("Discard")
+        elif status == "staged":
+            stage_action = None
+            diff_action = menu.addAction("View Diff")
+            discard_action = menu.addAction("Unstage")
+        else:
+            stage_action = None
+            diff_action = None
+            discard_action = None
+
+        action = menu.exec(widget.mapToGlobal(pos))
+        if action is None:
+            return
+
+        if action == stage_action:
+            self.stage_requested.emit(paths)
+        elif action == discard_action and status == "staged":
+            self.unstage_requested.emit(paths)
+        elif action == discard_action:
+            self.discard_requested.emit(paths)
+        elif action == diff_action:
+            self.diff_requested.emit(paths[0], status == "staged")
 
     def _populate(self, list_widget: QListWidget, items: list[FileChange]) -> None:
         """Fill a list widget with file paths, storing path in item data."""

@@ -12,6 +12,8 @@ class ConsoleWidget(QWidget):
         self._view = QPlainTextEdit()
         self._view.setReadOnly(True)
         self._view.setLineWrapMode(QPlainTextEdit.NoWrap)
+        # Tag this widget so the theme engine can target console styling.
+        self._view.setProperty("consoleWidget", True)
 
         layout = QVBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)

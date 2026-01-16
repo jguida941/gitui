@@ -1,22 +1,20 @@
 # ui_status_panel Notes
 
 Purpose
-- Show staged/unstaged/untracked/conflicted lists from RepoStatus.
-- Emit diff requests for staged/unstaged selections.
+- Show staged/unstaged/untracked/conflicted file lists.
+- Emit diff requests and context-menu intents (stage/unstage/discard).
 
-Flowchart: set_status
+Key elements
+- Lists are multi-select for batch actions.
+- Context menus are tailored per bucket (e.g., untracked skips discard).
+- Dynamic `gitStatus` property enables theme styling.
 
-[RepoStatus]
+Flowchart: StatusPanel
+
+[set_status] -> [populate lists]
         |
         v
-[populate list widgets]
+[select file] -> [emit diff_requested]
         |
         v
-[update group titles with counts]
-
-Flowchart: diff selection
-
-[user selects staged/unstaged item]
-        |
-        v
-[emit diff_requested(path, staged)]
+[right-click] -> [emit stage/unstage/discard]

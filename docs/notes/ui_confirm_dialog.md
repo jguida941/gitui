@@ -1,11 +1,12 @@
 # ui_confirm_dialog Notes
 
 Purpose
-- Placeholder for confirmation dialog.
+- Confirm destructive actions (discard changes, etc.).
 
-Flowchart: stub
+Key elements
+- Uses standard Accept/Reject buttons.
+- `ask()` helper returns True on confirm.
 
-[ConfirmDialog placeholder]
-        |
-        v
-[No logic yet; wiring comes later]
+Flowchart: ConfirmDialog
+
+[ask()] -> [show dialog] -> [user confirms?] -> [True/False]

@@ -1,11 +1,17 @@
 # ui_remotes_panel Notes
 
 Purpose
-- Placeholder for the remotes UI panel.
+- Display configured remotes and allow add/remove/update URL.
+- Keep write operations behind explicit action buttons.
 
-Flowchart: stub
+Key elements
+- Tree lists name + fetch/push URLs.
+- Add row captures name + URL for new remote.
+- Edit row selects existing remote for remove/set-url.
 
-[RemotesPanel placeholder]
+Flowchart: RemotesPanel
+
+[set_remotes] -> [populate tree + combo]
         |
         v
-[No logic yet; wiring comes later]
+[action click] -> [emit remote intent]

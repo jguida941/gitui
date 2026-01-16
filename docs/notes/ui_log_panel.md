@@ -1,11 +1,16 @@
 # ui_log_panel Notes
 
 Purpose
-- Placeholder for the commit history panel.
+- Render recent commits in a sortable table.
+- Provide a refresh control without direct git execution.
 
-Flowchart: stub
+Key elements
+- Table columns: short hash, subject, author, date.
+- Refresh button emits a signal for RepoController.
 
-[LogPanel placeholder]
+Flowchart: LogPanel
+
+[refresh click] -> [emit refresh_requested]
         |
         v
-[No logic yet; wiring comes later]
+[set_commits] -> [populate table]

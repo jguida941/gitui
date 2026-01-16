@@ -1,11 +1,12 @@
 # ui_diff_viewer Notes
 
 Purpose
-- Display the current diff text selected from the status panel.
+- Display diff text for the selected file.
 
-Flowchart: set_diff_text
+Key elements
+- Read-only, no-wrap view.
+- `diffViewer` property enables theme monospace styling.
 
-[diff text]
-        |
-        v
-[update QPlainTextEdit]
+Flowchart: DiffViewer
+
+[diff text] -> [set plain text]

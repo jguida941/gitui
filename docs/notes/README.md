@@ -25,23 +25,30 @@ Component notes
 - parse_stash.md: Stash list parsing plan with separators.
 - parse_tags.md: Tag list parsing plan.
 - parse_remotes.md: Remote list parsing plan.
-- main_entry.md: app/main.py placeholder behavior.
+- main_entry.md: app/main.py launch flow.
 - utils_logging.md: Logging setup helper.
 - utils_paths.md: Path normalization helper.
 - utils_settings.md: In-memory settings store.
-- ui_branches_panel.md: Placeholder branch panel.
-- ui_commit_panel.md: Placeholder commit panel.
-- ui_console_widget.md: Placeholder console widget.
-- ui_diff_viewer.md: Placeholder diff viewer.
-- ui_log_panel.md: Placeholder log panel.
-- ui_main_window.md: Placeholder main window.
-- ui_repo_picker.md: Placeholder repo picker.
-- ui_status_panel.md: Placeholder status panel.
-- ui_stash_panel.md: Placeholder for stash UI panel.
-- ui_tags_panel.md: Placeholder for tags UI panel.
-- ui_remotes_panel.md: Placeholder for remotes UI panel.
-- ui_confirm_dialog.md: Placeholder confirm dialog.
-- ui_error_dialog.md: Placeholder error dialog.
+- ui_branches_panel.md: Branch list panel.
+- ui_commit_panel.md: Commit message panel.
+- ui_console_widget.md: Console widget for command output.
+- ui_diff_viewer.md: Diff viewer panel.
+- ui_log_panel.md: Commit history panel.
+- ui_main_window.md: Main window layout + wiring.
+- ui_repo_picker.md: Repo picker component.
+- ui_status_panel.md: Status lists + context menu actions.
+- ui_stash_panel.md: Stash list + actions.
+- ui_tags_panel.md: Tag list + actions.
+- ui_remotes_panel.md: Remote list + actions.
+- ui_confirm_dialog.md: Confirmation dialog.
+- ui_error_dialog.md: Error dialog.
+- ui_git_toolbar.md: Quick git action toolbar.
+- ui_theme_engine.md: Theme engine and presets.
+- ui_theme_editor_dialog.md: Theme editor dialog.
+- ui_theme_controls.md: Theme editor controls.
+- ui_theme_preview.md: Theme preview widget gallery.
+- ui_theme.md: Theme API compatibility layer.
+- run_gitui.md: Launcher script for GitUI.
 - run_mutation.md: Mutmut wrapper script.
 - manual_smoke.md: CLI smoke test script for CommandRunner.
 - coverage_check.md: Per-file coverage gate script.
@@ -51,6 +58,7 @@ Component notes
 
 Test notes (docs/notes/tests/)
 - tests/README.md: Index for test notes.
+- tests/command_queue.md: What CommandQueue tests assert.
 - tests/command_runner.md: What CommandRunner tests assert.
 - tests/conftest.md: Shared fixtures used by tests.
 - tests/parse_branches.md: What parse_branches tests assert.
@@ -72,3 +80,9 @@ Test notes (docs/notes/tests/)
 - tests/repo_state.md: RepoState setter tests.
 - tests/scripts.md: Script tests (coverage + smoke).
 - tests/ui_placeholders.md: UI placeholder tests.
+- tests/ui_panels.md: UI panel behavior tests.
+- tests/theme_engine.md: ThemeEngine state tests.
+- tests/theme_controls.md: Theme control widgets tests.
+- tests/theme_preview.md: Theme preview widget tests.
+- tests/theme_editor_dialog.md: Theme editor dialog tests.
+- tests/dialogs.md: Confirm/Error dialog tests.

@@ -54,6 +54,7 @@ Error-path checks
 
 GUI checks (when UI is wired)
 - [ ] Launch the app (`python -m app.main --repo /path/to/repo`) and open a repo.
+- [ ] Theme Editor opens from the menu, presets switch, export JSON/QSS works.
 - [ ] Status list shows staged/unstaged/untracked groups.
 - [ ] Selecting a staged/unstaged file updates the diff viewer.
 - [ ] Conflict list shows conflicted files (if any).
@@ -61,6 +62,7 @@ GUI checks (when UI is wired)
 - [ ] Log view renders commits and merge parents.
 - [ ] Branches panel shows current + upstream/ahead/behind, and switching works.
 - [ ] Console logs each command with timestamps and exit codes.
+- [ ] Discard actions prompt for confirmation before running git restore.
 
 Insights & graphs (when implemented)
 - [ ] Activity timeline counts match `git log --date=iso-strict --pretty=format:%ad%x1e`.

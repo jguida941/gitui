@@ -1,1 +1,1 @@
-"""UI placeholders (Qt wiring comes later)."""
+"""Qt UI components for GitUI."""

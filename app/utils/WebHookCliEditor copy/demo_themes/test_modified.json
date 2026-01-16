@@ -1,0 +1,9 @@
+{
+  "colors": {
+    "Background": "background-color: #121212; border: 1px solid #444;",
+    "Foreground": "background-color: #EEEEEE; border: 1px solid #444;",
+    "Primary": "background-color: #FF6B35; border: 1px solid #444;",
+    "Secondary": "background-color: #FF4500; border: 1px solid #444;",
+    "Accent": "background-color: #FFD700; border: 1px solid #444;"
+  }
+}
