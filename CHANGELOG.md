@@ -73,6 +73,7 @@ All notable changes to this project will be documented here.
 - Pytest config silences pytest-asyncio loop scope warnings.
 - Notes directory now separates test notes under `docs/notes/tests/`.
 - Test note filenames dropped the `tests_` prefix under `docs/notes/tests/`.
+- Notes are now grouped under `docs/notes/{ui,exec,git,core,utils,quality}/`.
 - Mutmut config now uses list syntax and copies full `app/` into `mutants/`.
 - Mutation runner script now relies on pyproject config.
 - Manual smoke script ensures repo root is on `sys.path`.

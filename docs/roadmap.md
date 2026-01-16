@@ -311,7 +311,7 @@ DoD
 Purpose: visualize repo activity using existing git data.
 
 Prereq
-- Complete the core command audit (docs/notes/core_command_audit.md).
+- Complete the core command audit (docs/notes/git/core_command_audit.md).
 
 Charts (PyQtGraph)
 - Commit activity timeline (daily/weekly counts).
@@ -361,7 +361,7 @@ All through intents and CommandRunner.
 Purpose: add high-value git tools power users expect in a GUI.
 
 Prereq
-- Complete the core command audit (docs/notes/core_command_audit.md).
+- Complete the core command audit (docs/notes/git/core_command_audit.md).
 
 Commands (safe defaults)
 - `git show <sha>` (commit details + patch)

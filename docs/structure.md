@@ -78,70 +78,26 @@ Current tree (placeholder scaffold):
 │   ├── agents.md
 │   ├── notes
 │   │   ├── README.md
-│   │   ├── adr_scope.md
-│   │   ├── command_models.md
-│   │   ├── command_queue.md
-│   │   ├── command_runner.md
-│   │   ├── core_command_audit.md
-│   │   ├── coverage_check.md
-│   │   ├── errors.md
-│   │   ├── fake_command_runner.md
-│   │   ├── git_runner.md
-│   │   ├── git_service.md
-│   │   ├── main_entry.md
-│   │   ├── manual_smoke.md
-│   │   ├── models.md
-│   │   ├── package_app_init.md
-│   │   ├── package_exec_init.md
-│   │   ├── package_ui_init.md
-│   │   ├── parse_branches.md
-│   │   ├── parse_conflicts.md
-│   │   ├── parse_diff.md
-│   │   ├── parse_log.md
-│   │   ├── parse_remotes.md
-│   │   ├── parse_status.md
-│   │   ├── parse_stash.md
-│   │   ├── parse_tags.md
-│   │   ├── qt_compat.md
-│   │   ├── run_gitui.md
-│   │   ├── run_mutation.md
-│   │   ├── ui_branches_panel.md
-│   │   ├── ui_commit_panel.md
-│   │   ├── ui_console_widget.md
-│   │   ├── ui_diff_viewer.md
-│   │   ├── ui_git_toolbar.md
-│   │   ├── ui_log_panel.md
-│   │   ├── ui_main_window.md
-│   │   ├── ui_repo_picker.md
-│   │   ├── ui_status_panel.md
-│   │   ├── ui_stash_panel.md
-│   │   ├── ui_tags_panel.md
-│   │   ├── ui_remotes_panel.md
-│   │   ├── ui_theme.md
-│   │   ├── ui_theme_controls.md
-│   │   ├── ui_theme_editor_dialog.md
-│   │   ├── ui_theme_engine.md
-│   │   ├── ui_theme_preview.md
-│   │   ├── ui_confirm_dialog.md
-│   │   ├── ui_error_dialog.md
-│   │   ├── repo_controller.md
-│   │   ├── repo_state.md
-│   │   ├── utils_logging.md
-│   │   ├── utils_paths.md
-│   │   ├── utils_settings.md
-│   │   ├── testing_checklist.md
-│   │   ├── testing.md
-│   │   ├── tests
-│   │   │   ├── README.md
+│   │   ├── core
+│   │   │   ├── adr_scope.md
+│   │   │   ├── errors.md
+│   │   │   ├── main_entry.md
+│   │   │   ├── models.md
+│   │   │   ├── package_app_init.md
+│   │   │   ├── repo_controller.md
+│   │   │   └── repo_state.md
+│   │   ├── exec
+│   │   │   ├── command_models.md
 │   │   │   ├── command_queue.md
 │   │   │   ├── command_runner.md
-│   │   │   ├── conftest.md
-│   │   │   ├── controller.md
-│   │   │   ├── dialogs.md
-│   │   │   ├── errors.md
+│   │   │   ├── fake_command_runner.md
+│   │   │   └── package_exec_init.md
+│   │   ├── git
+│   │   │   ├── command_guide.md
+│   │   │   ├── core_command_audit.md
 │   │   │   ├── git_runner.md
 │   │   │   ├── git_service.md
-│   │   │   ├── main.md
+│   │   │   ├── insights.md
 │   │   │   ├── parse_branches.md
 │   │   │   ├── parse_conflicts.md
 │   │   │   ├── parse_diff.md
@@ -149,18 +105,69 @@ Current tree (placeholder scaffold):
 │   │   │   ├── parse_remotes.md
 │   │   │   ├── parse_status.md
 │   │   │   ├── parse_stash.md
-│   │   │   ├── parse_tags.md
-│   │   │   ├── parsers_property.md
+│   │   │   └── parse_tags.md
+│   │   ├── quality
+│   │   │   ├── coverage_check.md
+│   │   │   ├── manual_smoke.md
+│   │   │   ├── run_gitui.md
+│   │   │   ├── run_mutation.md
+│   │   │   ├── testing.md
+│   │   │   └── testing_checklist.md
+│   │   ├── ui
+│   │   │   ├── package_ui_init.md
+│   │   │   ├── ui_branches_panel.md
+│   │   │   ├── ui_commit_panel.md
+│   │   │   ├── ui_console_widget.md
+│   │   │   ├── ui_confirm_dialog.md
+│   │   │   ├── ui_diff_viewer.md
+│   │   │   ├── ui_error_dialog.md
+│   │   │   ├── ui_git_toolbar.md
+│   │   │   ├── ui_log_panel.md
+│   │   │   ├── ui_main_window.md
+│   │   │   ├── ui_remotes_panel.md
+│   │   │   ├── ui_repo_picker.md
+│   │   │   ├── ui_status_panel.md
+│   │   │   ├── ui_stash_panel.md
+│   │   │   ├── ui_tags_panel.md
+│   │   │   ├── ui_theme.md
+│   │   │   ├── ui_theme_controls.md
+│   │   │   ├── ui_theme_editor_dialog.md
+│   │   │   ├── ui_theme_engine.md
+│   │   │   └── ui_theme_preview.md
+│   │   ├── utils
 │   │   │   ├── qt_compat.md
-│   │   │   ├── repo_state.md
-│   │   │   ├── scripts.md
-│   │   │   ├── theme_controls.md
-│   │   │   ├── theme_editor_dialog.md
-│   │   │   ├── theme_engine.md
-│   │   │   ├── theme_preview.md
-│   │   │   ├── ui_panels.md
-│   │   │   └── ui_placeholders.md
-│   │   └── README.md
+│   │   │   ├── utils_logging.md
+│   │   │   ├── utils_paths.md
+│   │   │   └── utils_settings.md
+│   │   └── tests
+│   │       ├── README.md
+│   │       ├── command_queue.md
+│   │       ├── command_runner.md
+│   │       ├── conftest.md
+│   │       ├── controller.md
+│   │       ├── dialogs.md
+│   │       ├── errors.md
+│   │       ├── git_runner.md
+│   │       ├── git_service.md
+│   │       ├── main.md
+│   │       ├── parse_branches.md
+│   │       ├── parse_conflicts.md
+│   │       ├── parse_diff.md
+│   │       ├── parse_log.md
+│   │       ├── parse_remotes.md
+│   │       ├── parse_status.md
+│   │       ├── parse_stash.md
+│   │       ├── parse_tags.md
+│   │       ├── parsers_property.md
+│   │       ├── qt_compat.md
+│   │       ├── repo_state.md
+│   │       ├── scripts.md
+│   │       ├── theme_controls.md
+│   │       ├── theme_editor_dialog.md
+│   │       ├── theme_engine.md
+│   │       ├── theme_preview.md
+│   │       ├── ui_panels.md
+│   │       └── ui_placeholders.md
 │   ├── roadmap.md
 │   └── structure.md
 ├── pyproject.toml

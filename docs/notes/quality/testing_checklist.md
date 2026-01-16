@@ -41,7 +41,7 @@ Backend (CLI) spot checks
 - [ ] Remote parsing: run `git remote -v` to confirm fetch/push lines.
 
 Core commands audit (must pass before graphs or power tools)
-- [ ] Run the sequence in `docs/notes/core_command_audit.md`.
+- [ ] Run the sequence in `docs/notes/git/core_command_audit.md`.
 - [ ] Record any failures and fix backend parsing or intent wiring first.
 
 Error-path checks

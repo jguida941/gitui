@@ -12,7 +12,7 @@ Config
 
 Manual smoke
 - `scripts/manual_smoke.py` runs a real git status via QProcess.
-- Full checklist lives in `docs/notes/testing_checklist.md`.
+- Full checklist lives in `docs/notes/quality/testing_checklist.md`.
 
 Mutation testing
 - `scripts/run-mutation.sh` runs mutmut using the parser list in pyproject.toml.
