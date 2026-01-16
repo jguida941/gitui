@@ -1,6 +1,14 @@
 from __future__ import annotations
 
+import os
+
 import pytest
+
+pytest.importorskip("PySide6")
+
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
+
+from PySide6.QtWidgets import QApplication
 
 from app.ui.branches_panel import BranchesPanel
 from app.ui.commit_panel import CommitPanel
@@ -15,6 +23,8 @@ from app.ui.repo_picker import RepoPicker
 from app.ui.stash_panel import StashPanel
 from app.ui.status_panel import StatusPanel
 from app.ui.tags_panel import TagsPanel
+
+app = QApplication.instance() or QApplication([])
 
 
 @pytest.mark.parametrize(

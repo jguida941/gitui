@@ -1,7 +1,21 @@
-"""Placeholder widget for diff display (no logic yet)."""
+from __future__ import annotations
+
+from PySide6.QtWidgets import QPlainTextEdit, QVBoxLayout, QWidget
 
 
-class DiffViewer:
-    """Stub until Qt wiring is introduced."""
+class DiffViewer(QWidget):
+    """Read-only view for diff text."""
 
-    pass
+    def __init__(self) -> None:
+        super().__init__()
+        self._view = QPlainTextEdit()
+        self._view.setReadOnly(True)
+        self._view.setLineWrapMode(QPlainTextEdit.NoWrap)
+
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.addWidget(self._view)
+
+    def set_diff_text(self, diff_text: str | None) -> None:
+        """Update the diff display with the latest text."""
+        self._view.setPlainText(diff_text or "")

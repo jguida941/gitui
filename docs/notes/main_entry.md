@@ -1,12 +1,21 @@
 # main Entry Notes
 
 Purpose
-- Provide a minimal CLI entry point without launching Qt.
-- Keeps the module importable and testable while UI wiring is pending.
+- Launch the Qt application and wire the core controller stack.
+- Provide a `--no-gui` path for tests and automation.
+- Allow `--repo` to open a path on startup.
 
 Flowchart: main()
 
-[call main]
+[parse args]
         |
         v
-[return 0 (placeholder)]
+[--no-gui?]
+   |        \
+  yes       no
+   |         \
+   v          v
+[return 0] [QApplication + MainWindow]
+               |
+               v
+       [show + exec]

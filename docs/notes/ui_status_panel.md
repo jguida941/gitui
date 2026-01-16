@@ -1,11 +1,22 @@
 # ui_status_panel Notes
 
 Purpose
-- Placeholder for status list panel.
+- Show staged/unstaged/untracked/conflicted lists from RepoStatus.
+- Emit diff requests for staged/unstaged selections.
 
-Flowchart: stub
+Flowchart: set_status
 
-[StatusPanel placeholder]
+[RepoStatus]
         |
         v
-[No logic yet; wiring comes later]
+[populate list widgets]
+        |
+        v
+[update group titles with counts]
+
+Flowchart: diff selection
+
+[user selects staged/unstaged item]
+        |
+        v
+[emit diff_requested(path, staged)]

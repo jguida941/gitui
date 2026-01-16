@@ -53,8 +53,9 @@ Error-path checks
       unless forced.
 
 GUI checks (when UI is wired)
-- [ ] Launch the app and open a repo.
+- [ ] Launch the app (`python -m app.main --repo /path/to/repo`) and open a repo.
 - [ ] Status list shows staged/unstaged/untracked groups.
+- [ ] Selecting a staged/unstaged file updates the diff viewer.
 - [ ] Conflict list shows conflicted files (if any).
 - [ ] Stash/tag/remote panels display parsed lists.
 - [ ] Log view renders commits and merge parents.

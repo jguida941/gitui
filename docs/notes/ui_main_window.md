@@ -1,11 +1,22 @@
 # ui_main_window Notes
 
 Purpose
-- Placeholder for the main window shell.
+- Compose the main UI layout and wire signals to the controller.
+- Stream CommandRunner output into the console.
 
-Flowchart: stub
+Flowchart: init
 
-[MainWindow placeholder]
+[build controller stack]
         |
         v
-[No logic yet; wiring comes later]
+[construct widgets]
+        |
+        v
+[wire signals + refresh state]
+
+Flowchart: refresh
+
+[RepoState changed]
+        |
+        v
+[update repo picker + status + diff + title]

@@ -1,7 +1,7 @@
 # tests_main Notes
 
 Purpose
-- Cover the app entrypoint without launching Qt.
+- Cover the app entrypoint without launching Qt via `--no-gui`.
 
 Flowchart: test_main_module_exit_code
 

@@ -1,11 +1,11 @@
 # ui_diff_viewer Notes
 
 Purpose
-- Placeholder for the diff viewer widget.
+- Display the current diff text selected from the status panel.
 
-Flowchart: stub
+Flowchart: set_diff_text
 
-[DiffViewer placeholder]
+[diff text]
         |
         v
-[No logic yet; wiring comes later]
+[update QPlainTextEdit]

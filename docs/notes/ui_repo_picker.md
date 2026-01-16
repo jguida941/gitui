@@ -1,11 +1,22 @@
 # ui_repo_picker Notes
 
 Purpose
-- Placeholder for repo picker panel.
+- Collect a repo path and emit a request to open it.
+- Provide a browse button to avoid typing paths.
 
-Flowchart: stub
+Flowchart: open repo
 
-[RepoPicker placeholder]
+[user enters path + clicks Open]
         |
         v
-[No logic yet; wiring comes later]
+[emit repo_opened(path)]
+
+Flowchart: browse
+
+[user clicks browse]
+        |
+        v
+[QFileDialog returns directory]
+        |
+        v
+[set line edit]

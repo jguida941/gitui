@@ -1,11 +1,14 @@
 # tests_ui_placeholders Notes
 
 Purpose
-- Ensure placeholder UI classes are importable and constructible.
+- Ensure UI widgets (placeholders + wired components) construct with Qt.
 
 Flowchart: test_ui_placeholders_construct
 
-[instantiate stub classes]
+[ensure QApplication exists]
+        |
+        v
+[instantiate UI classes]
         |
         v
 [assert class types]

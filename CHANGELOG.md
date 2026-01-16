@@ -54,6 +54,8 @@ All notable changes to this project will be documented here.
 - Tests for stash records with missing fields (padding logic).
 - Tests for GitService push() ValueError when set_upstream missing args.
 - Tests for GitService runner property accessor.
+- Initial GUI wiring: MainWindow, RepoPicker, StatusPanel, DiffViewer, ConsoleWidget.
+- `--no-gui` option for the main entrypoint to keep tests headless.
 
 ### Changed
 - Docs structure and agent contract for learning workflow.
@@ -74,6 +76,7 @@ All notable changes to this project will be documented here.
 - Mutmut now skips `qprocess` tests to avoid Qt/QProcess crashes.
 - Core command audit completed: all CLI commands produce expected machine-readable output.
 - Test coverage improved to 91% (above 90% threshold) for non-UI modules.
+- UI notes updated to document wiring and diff selection behavior.
 
 ### Fixed
 - Ruff import cleanup in command models.

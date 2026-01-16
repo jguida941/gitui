@@ -1,11 +1,25 @@
 # ui_console_widget Notes
 
 Purpose
-- Placeholder for the console output widget.
+- Display command output and lifecycle events for transparency.
+- Keep a simple scrollback log the user can read.
 
-Flowchart: stub
+Flowchart: append_stdout
 
-[ConsoleWidget placeholder]
+[stdout bytes]
         |
         v
-[No logic yet; wiring comes later]
+[decode + prefix lines]
+        |
+        v
+[append to QPlainTextEdit]
+
+Flowchart: append_event
+
+[command start/finish]
+        |
+        v
+[format event line]
+        |
+        v
+[append to QPlainTextEdit]
