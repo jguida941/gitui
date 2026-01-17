@@ -11,7 +11,7 @@ Key elements
 - `set_apply_enabled()` toggles live application vs preview-only.
 - Emits `theme_changed` for UI refresh.
 - `hover_brighten` influences hover colors in generated styles.
-- Transition settings are injected into button/tool styles when enabled.
+- Transition settings are stored but not emitted because QSS doesn't support transitions.
 - `editorSection` group boxes get lighter styling in the stylesheet.
 
 Flowchart: ThemeEngine

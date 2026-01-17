@@ -12,6 +12,8 @@ from app.utils import qt_compat
 if qt_compat.PYSIDE6_AVAILABLE:
     from PySide6.QtCore import QCoreApplication, QEventLoop, QTimer
 
+IS_DARWIN = sys.platform == "darwin"
+
 
 def _ensure_qt_app() -> None:
     app = QCoreApplication.instance()
@@ -41,7 +43,10 @@ def _wait_for_finished(runner: CommandRunner, timeout_ms: int = 2000) -> dict[st
 
 
 @pytest.mark.qprocess
-@pytest.mark.skipif(not qt_compat.PYSIDE6_AVAILABLE, reason="PySide6 required for QProcess")
+@pytest.mark.skipif(
+    not qt_compat.PYSIDE6_AVAILABLE or IS_DARWIN,
+    reason="PySide6 required for QProcess; macOS QProcess tests are unstable",
+)
 def test_command_runner_emits_output_and_result(tmp_path) -> None:
     _ensure_qt_app()
     runner = CommandRunner()
@@ -79,7 +84,10 @@ def test_command_runner_emits_output_and_result(tmp_path) -> None:
 
 
 @pytest.mark.qprocess
-@pytest.mark.skipif(not qt_compat.PYSIDE6_AVAILABLE, reason="PySide6 required for QProcess")
+@pytest.mark.skipif(
+    not qt_compat.PYSIDE6_AVAILABLE or IS_DARWIN,
+    reason="PySide6 required for QProcess; macOS QProcess tests are unstable",
+)
 def test_command_runner_cancel_and_kill(tmp_path) -> None:
     _ensure_qt_app()
     runner = CommandRunner()

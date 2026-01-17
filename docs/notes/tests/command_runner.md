@@ -4,6 +4,7 @@ Purpose
 - Exercise QProcess-based command execution and signal flow.
 - Use a fake QProcess when PySide6 is unavailable to keep coverage consistent.
 - Mark QProcess tests with `qprocess` so mutmut can skip them.
+- Skip `qprocess` tests on macOS where QProcess+pytest-qt is unstable.
 
 Flowchart: test_command_runner_emits_output_and_result
 

@@ -94,6 +94,7 @@ All notable changes to this project will be documented here.
 - Discard actions now prompt for confirmation and error dialogs show command details.
 - Theme modules now live under `app/ui/theme/` with updated imports.
 - ADR-0003 now notes machine-readable branch listing via `git branch --format`.
+- QProcess tests are skipped on macOS due to PySide6/pytest-qt instability.
 
 ### Fixed
 - Ruff import cleanup in command models.
@@ -108,3 +109,4 @@ All notable changes to this project will be documented here.
 - Branch upstream signal now accepts an optional branch name.
 - Theme editor sections render without heavy group box panels.
 - Theme preview now applies shadow effects from the theme engine.
+- ThemeEngine no longer emits unsupported QSS `transition` properties (removes warnings).

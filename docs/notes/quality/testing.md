@@ -9,6 +9,7 @@ Config
 - pytest-asyncio uses `asyncio_default_fixture_loop_scope = "function"` to silence warnings.
 - Property-based tests skip if Hypothesis is not installed.
 - QProcess integration tests are marked `qprocess` and skipped by mutmut.
+- QProcess tests are skipped on macOS due to PySide6/pytest-qt instability.
 
 Manual smoke
 - `scripts/manual_smoke.py` runs a real git status via QProcess.

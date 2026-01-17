@@ -17,6 +17,7 @@ Decision
   - Property-based tests (Hypothesis) for parser robustness.
   - Mutation testing (mutmut) to validate that tests detect meaningful changes.
   - Manual smoke tests for real git/QProcess execution.
+- Skip QProcess integration tests on macOS where PySide6/pytest-qt is unstable; rely on Linux/Windows runs plus manual smoke.
 - Enforce per-file line coverage >= 90% on backend and script code.
 - Keep a manual test checklist with expected results for CLI/GUI steps.
 - Prefer targeted tests for risky or complex logic instead of broad, shallow tests.

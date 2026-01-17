@@ -1034,11 +1034,6 @@ class ThemeEngine(QObject):
         e = self._state.effects
         button_hover = _adjust_color(c.surface, 1.08) if e.hover_brighten else c.background_alt
         tool_hover = _adjust_color(c.surface, 1.06) if e.hover_brighten else c.background_alt
-        transition_css = ""
-        if e.transition_duration > 0:
-            transition_css = (
-                f"    transition: background-color {e.transition_duration}ms {e.transition_timing};"
-            )
 
         return f'''
 /* ═══════════════════════════════════════════════════════════════════════
@@ -1085,7 +1080,6 @@ QPushButton {{
     padding: {m.padding}px {m.padding_large}px;
     min-width: {m.button_min_width}px;
     min-height: {m.input_height}px;
-{transition_css}
 }}
 
 QPushButton:hover {{
@@ -1144,7 +1138,6 @@ QToolButton {{
     padding: {m.padding_small}px;
     min-width: 28px;
     min-height: 28px;
-{transition_css}
 }}
 
 QToolButton:hover {{

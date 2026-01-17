@@ -15,7 +15,7 @@ Repo fixture setup (recommended)
 - [ ] Optional: create a merge conflict to test conflict detection.
 
 Automated checks
-- [ ] `pytest -q` (ensure Hypothesis is installed so property tests run)
+- [ ] `pytest -q` (ensure Hypothesis is installed so property tests run; macOS skips qprocess tests)
 - [ ] `pytest --cov --cov-report=json:coverage.json`
 - [ ] `scripts/run-mutation.sh` (mutmut mutation score + survivors list).
 - [ ] `python scripts/check_coverage.py coverage.json` after `pytest --cov-report=json:coverage.json`.
