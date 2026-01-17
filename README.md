@@ -14,18 +14,19 @@ A PySide6 desktop UI on top of the git CLI. The backend stays CLI-native for ful
 ## Features
 
 Implemented
-- CLI-native backend (CommandRunner + GitRunner) with machine-parseable output.
-- Status + diff + stage/unstage/discard workflow.
-- Commit panel (message + amend toggle).
-- Branch/log/stash/tag/remote panels (listing + selection).
-- Git action toolbar (fetch/pull/push).
-- Theme engine + editor (presets, undo/redo, JSON/QSS import/export, live preview).
+- CLI-native backend (CommandRunner + GitRunner + GitService) with machine-readable parsing.
+- CommandQueue + RepoController/RepoState wiring with live console output.
+- Repo picker + status/diff workflow (staged/unstaged/untracked/conflicted lists).
+- Commit + fetch/pull/push actions.
+- Branch/log/stash/tag/remote panels with wired actions (switch/create/delete, stash save/apply/pop/drop, tag create/delete/push, remote add/remove/set-url).
+- Theme engine + editor (presets, undo/redo, live preview, JSON/QSS import/export).
 
 Planned
-- Branch management actions (create/rename/delete/checkout, upstream tooling).
-- Rich history views (commit details, per-commit diffs).
-- Stash/tag/remote actions beyond listing.
-- Insights/graphs (activity, churn, contributors).
-- Power tools (blame, grep, file history, stat views).
+- Commit details view + per-commit diffs/compare tools.
+- Insights/graphs (activity, churn, contributors, commit DAG).
+- Conflict center + merge/rebase/cherry-pick flows.
+- Partial staging (hunks/lines).
+- Power tools (blame, grep, file history, show, diff summaries).
+- Optional GitHub CLI integration (ADR-gated).
 
 Status: active development.
