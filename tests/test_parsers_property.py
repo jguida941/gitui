@@ -17,6 +17,7 @@ from app.git.parse_branches import parse_branches
 from app.git.parse_conflicts import parse_conflict_paths
 from app.git.parse_diff import parse_diff_text
 from app.git.parse_log import parse_log_records
+from app.git.parse_remote_branches import parse_remote_branches
 from app.git.parse_status import parse_status_porcelain_v2
 
 
@@ -41,6 +42,13 @@ def test_parse_log_never_crashes(data: bytes) -> None:
 @settings(max_examples=200)
 def test_parse_branches_never_crashes(data: bytes) -> None:
     result = parse_branches(data)
+    assert isinstance(result, list)
+
+
+@given(st.binary())
+@settings(max_examples=200)
+def test_parse_remote_branches_never_crashes(data: bytes) -> None:
+    result = parse_remote_branches(data)
     assert isinstance(result, list)
 
 

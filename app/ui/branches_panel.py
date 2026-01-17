@@ -15,7 +15,7 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
-from app.core.models import Branch
+from app.core.models import Branch, RemoteBranch
 
 
 class BranchesPanel(QWidget):
@@ -26,15 +26,21 @@ class BranchesPanel(QWidget):
     create_requested = Signal(str, str)
     delete_requested = Signal(str, bool)
     set_upstream_requested = Signal(str, object)
+    delete_remote_requested = Signal(str, str)
 
     def __init__(self) -> None:
         super().__init__()
         self._branches: list[Branch] = []
+        self._remote_branches: list[RemoteBranch] = []
         self._remotes: list[str] = []
 
         self._tree = QTreeWidget()
         self._tree.setHeaderLabels(["Branch", "Upstream", "Ahead", "Behind", "Gone"])
         self._tree.itemSelectionChanged.connect(self._on_selection_changed)
+
+        self._remote_tree = QTreeWidget()
+        self._remote_tree.setHeaderLabels(["Remote", "Branch"])
+        self._remote_tree.itemSelectionChanged.connect(self._on_remote_selection_changed)
 
         self._branch_combo = QComboBox()
         self._branch_combo.setToolTip("Select a branch for actions")
@@ -47,6 +53,9 @@ class BranchesPanel(QWidget):
 
         self._upstream_combo = QComboBox()
         self._upstream_combo.setToolTip("Upstream (remote/branch)")
+
+        self._remote_branch_combo = QComboBox()
+        self._remote_branch_combo.setToolTip("Select a remote branch to delete")
 
         self._force_delete = QComboBox()
         self._force_delete.addItems(["Delete", "Force Delete"])
@@ -64,6 +73,18 @@ class BranchesPanel(QWidget):
         header.addWidget(refresh)
         layout.addLayout(header)
         layout.addWidget(self._tree)
+
+        remote_group = QGroupBox("Remote Branches")
+        remote_layout = QVBoxLayout(remote_group)
+        remote_layout.addWidget(self._remote_tree)
+        remote_actions = QHBoxLayout()
+        remote_actions.addWidget(QLabel("Remote"))
+        remote_actions.addWidget(self._remote_branch_combo, 1)
+        delete_remote = QPushButton("Delete Remote")
+        delete_remote.clicked.connect(self._emit_delete_remote)
+        remote_actions.addWidget(delete_remote)
+        remote_layout.addLayout(remote_actions)
+        layout.addWidget(remote_group)
 
         actions = QGroupBox("Actions")
         actions_layout = QVBoxLayout(actions)
@@ -148,6 +169,25 @@ class BranchesPanel(QWidget):
         if current_upstream:
             self._upstream_combo.setCurrentText(current_upstream)
 
+    def set_remote_branches(self, branches: list[RemoteBranch] | None) -> None:
+        """Populate the remote branch list and dropdown."""
+        self._remote_branches = list(branches or [])
+        self._remote_tree.clear()
+
+        current_remote = self._remote_branch_combo.currentData()
+        self._remote_branch_combo.clear()
+
+        for branch in self._remote_branches:
+            item = QTreeWidgetItem([branch.remote, branch.name])
+            item.setData(0, Qt.UserRole, (branch.remote, branch.name))
+            self._remote_tree.addTopLevelItem(item)
+            self._remote_branch_combo.addItem(branch.full_name, (branch.remote, branch.name))
+
+        if current_remote:
+            index = self._remote_branch_combo.findData(current_remote)
+            if index >= 0:
+                self._remote_branch_combo.setCurrentIndex(index)
+
     def _rebuild_upstream(self, branch_names: list[str]) -> None:
         # Build upstream options from remotes + branch names for quick selection.
         self._upstream_combo.clear()
@@ -163,6 +203,16 @@ class BranchesPanel(QWidget):
         name = items[0].data(0, Qt.UserRole)
         if name:
             self._branch_combo.setCurrentText(name)
+
+    def _on_remote_selection_changed(self) -> None:
+        items = self._remote_tree.selectedItems()
+        if not items:
+            return
+        data = items[0].data(0, Qt.UserRole)
+        if data:
+            index = self._remote_branch_combo.findData(data)
+            if index >= 0:
+                self._remote_branch_combo.setCurrentIndex(index)
 
     def _emit_switch(self) -> None:
         name = self._branch_combo.currentText()
@@ -187,3 +237,11 @@ class BranchesPanel(QWidget):
         branch = self._branch_combo.currentText() or None
         if upstream:
             self.set_upstream_requested.emit(upstream, branch)
+
+    def _emit_delete_remote(self) -> None:
+        data = self._remote_branch_combo.currentData()
+        if not data:
+            return
+        remote, name = data
+        if remote and name:
+            self.delete_remote_requested.emit(remote, name)

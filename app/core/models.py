@@ -39,6 +39,15 @@ class Branch:
 
 
 @dataclass(frozen=True)
+class RemoteBranch:
+    """Remote-tracking branch parsed from `git branch -r --format=...` output."""
+
+    remote: str
+    name: str
+    full_name: str
+
+
+@dataclass(frozen=True)
 class RepoStatus:
     """Snapshot of repo status grouped for the UI."""
 

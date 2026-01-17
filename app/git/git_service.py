@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from app.core.models import Branch, Commit, Remote, RepoStatus, StashEntry, Tag
+from app.core.models import Branch, Commit, Remote, RemoteBranch, RepoStatus, StashEntry, Tag
 from app.exec.command_models import RunHandle
 from app.exec.command_runner import CommandRunner
 from app.git.git_runner import GitRunner
@@ -11,6 +11,7 @@ from app.git.parse_conflicts import parse_conflict_paths
 from app.git.parse_diff import parse_diff_text
 from app.git.parse_log import parse_log_records
 from app.git.parse_remotes import parse_remotes
+from app.git.parse_remote_branches import parse_remote_branches
 from app.git.parse_stash import parse_stash_records
 from app.git.parse_status import parse_status_porcelain_v2
 from app.git.parse_tags import parse_tags
@@ -139,6 +140,9 @@ class GitService:
         """List branches with upstream tracking info."""
         return self._runner.run(["branch", f"--format={BRANCH_FORMAT}"], cwd=repo_path)
 
+    def remote_branches_raw(self, repo_path: str) -> RunHandle:
+        """List remote-tracking branches."""
+        return self._runner.run(["branch", "-r", "--format=%(refname:short)"], cwd=repo_path)
     def conflicts_raw(self, repo_path: str) -> RunHandle:
         """List conflicted paths using diff-filter=U."""
         return self._runner.run(["diff", "--name-only", "--diff-filter=U"], cwd=repo_path)
@@ -241,6 +245,10 @@ class GitService:
         flag = "-D" if force else "-d"
         return self._runner.run(["branch", flag, name], cwd=repo_path)
 
+    def delete_remote_branch(self, repo_path: str, remote: str, name: str) -> RunHandle:
+        """Delete a remote branch via push --delete."""
+        return self._runner.run(["push", remote, "--delete", name], cwd=repo_path)
+
     def is_inside_work_tree_raw(self, repo_path: str) -> RunHandle:
         """Check if a path is inside a git work tree."""
         return self._runner.run(
@@ -267,6 +275,10 @@ class GitService:
     def parse_branches(self, payload: bytes) -> list[Branch]:
         """Parse branch list output into Branch objects."""
         return parse_branches(payload)
+
+    def parse_remote_branches(self, payload: bytes) -> list[RemoteBranch]:
+        """Parse remote branch list output into RemoteBranch objects."""
+        return parse_remote_branches(payload)
 
     def parse_conflicts(self, payload: bytes) -> list[str]:
         """Parse conflicted paths into a list of strings."""

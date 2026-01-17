@@ -15,6 +15,7 @@
 - parse_diff.md: What parse_diff tests assert.
 - parse_log.md: What parse_log tests assert.
 - parse_remotes.md: What parse_remotes tests assert.
+- parse_remote_branches.md: What parse_remote_branches tests assert.
 - parse_status.md: What parse_status tests assert.
 - parse_stash.md: What parse_stash tests assert.
 - parse_tags.md: What parse_tags tests assert.

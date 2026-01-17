@@ -8,6 +8,7 @@ Models
 - FileChange: one path with staged/unstaged status codes.
 - BranchInfo: branch name + upstream tracking state.
 - Branch: branch list row with upstream tracking info.
+- RemoteBranch: remote-tracking branch (remote/name).
 - RepoStatus: grouped changes for the status UI.
 - Commit: structured log entry (for history view).
 - StashEntry: stash list row with selector + summary.

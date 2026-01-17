@@ -7,6 +7,7 @@ from app.core.models import (
     BranchInfo,
     Commit,
     Remote,
+    RemoteBranch,
     RepoStatus,
     StashEntry,
     Tag,
@@ -37,6 +38,7 @@ class DummyService:
         self.validate_calls = 0
         self.log_calls = 0
         self.branches_calls = 0
+        self.remote_branches_calls = 0
         self.stage_calls = 0
         self.unstage_calls = 0
         self.discard_calls = 0
@@ -64,6 +66,7 @@ class DummyService:
         self.switch_branch_calls = 0
         self.create_branch_calls = 0
         self.delete_branch_calls = 0
+        self.delete_remote_branch_calls = 0
 
     @property
     def runner(self):
@@ -92,6 +95,10 @@ class DummyService:
     def branches_raw(self, repo_path: str) -> RunHandle:
         self.branches_calls += 1
         return self._handle(["git", "branch"], repo_path)
+
+    def remote_branches_raw(self, repo_path: str) -> RunHandle:
+        self.remote_branches_calls += 1
+        return self._handle(["git", "branch", "-r"], repo_path)
 
     def diff_file_raw(self, repo_path: str, path: str, staged: bool = False) -> RunHandle:
         self.diff_calls += 1
@@ -148,6 +155,10 @@ class DummyService:
         self.delete_branch_calls += 1
         args = ["git", "branch", "-D" if force else "-d", name]
         return self._handle(args, repo_path)
+
+    def delete_remote_branch(self, repo_path: str, remote: str, name: str) -> RunHandle:
+        self.delete_remote_branch_calls += 1
+        return self._handle(["git", "push", remote, "--delete", name], repo_path)
 
     def stash_save(
         self, repo_path: str, message: str | None = None, include_untracked: bool = False
@@ -253,6 +264,9 @@ class DummyService:
                 gone=False,
             )
         ]
+
+    def parse_remote_branches(self, _payload: bytes) -> list[RemoteBranch]:
+        return [RemoteBranch(remote="origin", name="main", full_name="origin/main")]
 
     def parse_stashes(self, _payload: bytes) -> list[StashEntry]:
         return [
@@ -384,7 +398,12 @@ def test_branches_result_updates_state() -> None:
     result = CommandResult(exit_code=0, stdout=b"", stderr=b"", duration_ms=1)
     controller._on_command_finished(handle, result)
 
+    remote_handle = service.last_handle
+    assert remote_handle is not None
+    controller._on_command_finished(remote_handle, result)
+
     assert controller.state.branches is not None
+    assert controller.state.remote_branches is not None
     assert controller.state.last_error is None
 
 
@@ -715,6 +734,19 @@ def test_delete_branch_refreshes_branches() -> None:
 
     _complete_last(controller, service)
 
+    assert service.branches_calls == 1
+
+
+def test_delete_remote_branch_refreshes_branches() -> None:
+    service = DummyService()
+    controller = RepoController(service)
+
+    controller.state.set_repo_path("/repo")
+    controller.delete_remote_branch("origin", "feature")
+
+    _complete_last(controller, service)
+
+    assert service.delete_remote_branch_calls == 1
     assert service.branches_calls == 1
 
 

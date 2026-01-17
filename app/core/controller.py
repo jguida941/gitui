@@ -147,6 +147,26 @@ class RepoController(QObject):
 
         self._enqueue("refresh_branches", QueuePriority.BACKGROUND, action)
 
+        def remote_action() -> None:
+            handle = self._service.remote_branches_raw(self._state.repo_path)
+            self._pending[handle.run_id] = PendingAction(kind="remote_branches")
+            self._state.set_busy(True)
+
+        self._enqueue("refresh_remote_branches", QueuePriority.BACKGROUND, remote_action)
+
+    def refresh_remote_branches(self) -> None:
+        """Fetch remote branch list for the current repo."""
+        if not self._state.repo_path:
+            self._state.set_error(NotARepo("(none)"))
+            return
+
+        def action() -> None:
+            handle = self._service.remote_branches_raw(self._state.repo_path)
+            self._pending[handle.run_id] = PendingAction(kind="remote_branches")
+            self._state.set_busy(True)
+
+        self._enqueue("refresh_remote_branches", QueuePriority.BACKGROUND, action)
+
     def refresh_conflicts(self) -> None:
         """Fetch conflicted paths for the current repo."""
         if not self._state.repo_path:
@@ -356,6 +376,21 @@ class RepoController(QObject):
             self._state.set_busy(True)
 
         self._enqueue("delete_branch", QueuePriority.USER, action)
+
+    def delete_remote_branch(self, remote: str, name: str) -> None:
+        """Delete a remote branch and refresh branch list."""
+        if not self._state.repo_path:
+            self._state.set_error(NotARepo("(none)"))
+            return
+
+        def action() -> None:
+            handle = self._service.delete_remote_branch(self._state.repo_path, remote, name)
+            self._pending[handle.run_id] = PendingAction(
+                kind="delete_remote_branch", refresh_branches=True
+            )
+            self._state.set_busy(True)
+
+        self._enqueue("delete_remote_branch", QueuePriority.USER, action)
 
     def stash_save(self, message: str | None = None, include_untracked: bool = False) -> None:
         """Create a stash and refresh status + stashes."""
@@ -591,6 +626,14 @@ class RepoController(QObject):
                 try:
                     branches = self._service.parse_branches(cmd_result.stdout)
                     self._state.set_branches(branches)
+                    self._state.set_error(None)
+                except Exception as exc:
+                    self._state.set_error(ParseError(str(exc)))
+
+            elif action.kind == "remote_branches":
+                try:
+                    branches = self._service.parse_remote_branches(cmd_result.stdout)
+                    self._state.set_remote_branches(branches)
                     self._state.set_error(None)
                 except Exception as exc:
                     self._state.set_error(ParseError(str(exc)))

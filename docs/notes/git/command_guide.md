@@ -316,6 +316,40 @@ main|*
 
 ---
 
+### 15a. Remote Branch List
+
+**Command:**
+```bash
+git branch -r --format="%(refname:short)"
+```
+
+**Purpose:** List remote-tracking branches for remotes like `origin/*`.
+
+**Verified Output:**
+```
+origin/HEAD
+origin/main
+```
+
+**Tested:** [x] PASS
+
+---
+
+### 15b. Delete Remote Branch
+
+**Command:**
+```bash
+git push <remote> --delete <branch>
+```
+
+**Purpose:** Delete a branch on the remote (e.g., GitHub).
+
+**Verified:** Successfully removed `origin/test-command-branch`.
+
+**Tested:** [x] PASS
+
+---
+
 ## Phase 3: Stash, Tags, Remotes
 
 ### 16. Stash List

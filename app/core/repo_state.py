@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from app.core.models import Branch, Commit, Remote, RepoStatus, StashEntry, Tag
+from app.core.models import Branch, Commit, Remote, RemoteBranch, RepoStatus, StashEntry, Tag
 from app.utils.qt_compat import QObject, Signal
 
 # RepoState is the single source of truth for UI data.
@@ -24,6 +24,7 @@ class RepoState(QObject):
         self._status: RepoStatus | None = None
         self._log: Sequence[Commit] | None = None
         self._branches: Sequence[Branch] | None = None
+        self._remote_branches: Sequence[RemoteBranch] | None = None
         self._stashes: Sequence[StashEntry] | None = None
         self._tags: Sequence[Tag] | None = None
         self._remotes: Sequence[Remote] | None = None
@@ -53,6 +54,11 @@ class RepoState(QObject):
     def branches(self) -> Sequence[Branch] | None:
         """Latest parsed branch list, if loaded."""
         return self._branches
+
+    @property
+    def remote_branches(self) -> Sequence[RemoteBranch] | None:
+        """Latest parsed remote branch list, if loaded."""
+        return self._remote_branches
 
     @property
     def stashes(self) -> Sequence[StashEntry] | None:
@@ -107,6 +113,11 @@ class RepoState(QObject):
     def set_branches(self, branches: Sequence[Branch] | None) -> None:
         """Update the branch list and notify listeners."""
         self._branches = branches
+        self.state_changed.emit()
+
+    def set_remote_branches(self, branches: Sequence[RemoteBranch] | None) -> None:
+        """Update the remote branch list and notify listeners."""
+        self._remote_branches = branches
         self.state_changed.emit()
 
     def set_stashes(self, stashes: Sequence[StashEntry] | None) -> None:

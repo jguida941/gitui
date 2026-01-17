@@ -112,6 +112,10 @@ def test_git_service_log_and_branches_raw() -> None:
     spec = fake.calls[-1]
     assert list(spec.args) == ["git", "branch", f"--format={BRANCH_FORMAT}"]
 
+    service.remote_branches_raw("/repo")
+    spec = fake.calls[-1]
+    assert list(spec.args) == ["git", "branch", "-r", "--format=%(refname:short)"]
+
     service.conflicts_raw("/repo")
     spec = fake.calls[-1]
     assert list(spec.args) == ["git", "diff", "--name-only", "--diff-filter=U"]
@@ -196,6 +200,10 @@ def test_git_service_remotes_raw_and_actions() -> None:
     service.set_remote_url("/repo", "origin", "https://example.com/new.git")
     spec = fake.calls[-1]
     assert list(spec.args) == ["git", "remote", "set-url", "origin", "https://example.com/new.git"]
+
+    service.delete_remote_branch("/repo", "origin", "feature-x")
+    spec = fake.calls[-1]
+    assert list(spec.args) == ["git", "push", "origin", "--delete", "feature-x"]
 
     service.set_upstream("/repo", "origin/main", branch="main")
     spec = fake.calls[-1]

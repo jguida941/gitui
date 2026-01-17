@@ -11,7 +11,17 @@ os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 from PySide6.QtCore import QPoint
 from PySide6.QtWidgets import QApplication, QMenu
 
-from app.core.models import Branch, BranchInfo, Commit, FileChange, Remote, RepoStatus, StashEntry, Tag
+from app.core.models import (
+    Branch,
+    BranchInfo,
+    Commit,
+    FileChange,
+    Remote,
+    RemoteBranch,
+    RepoStatus,
+    StashEntry,
+    Tag,
+)
 from app.ui.branches_panel import BranchesPanel
 from app.ui.commit_panel import CommitPanel
 from app.ui.git_toolbar import GitToolbar
@@ -46,16 +56,19 @@ def test_branches_panel_actions() -> None:
     ]
     panel.set_branches(branches)
     panel.set_remotes(["origin", "upstream"])
+    panel.set_remote_branches([RemoteBranch(remote="origin", name="main", full_name="origin/main")])
 
     switched: list[str] = []
     created: list[tuple[str, str]] = []
     deleted: list[tuple[str, bool]] = []
     upstreams: list[tuple[str, str | None]] = []
+    deleted_remote: list[tuple[str, str]] = []
 
     panel.switch_requested.connect(switched.append)
     panel.create_requested.connect(lambda name, start: created.append((name, start)))
     panel.delete_requested.connect(lambda name, force: deleted.append((name, force)))
     panel.set_upstream_requested.connect(lambda upstream, branch: upstreams.append((upstream, branch)))
+    panel.delete_remote_requested.connect(lambda remote, name: deleted_remote.append((remote, name)))
 
     panel._branch_combo.setCurrentText("dev")
     panel._emit_switch()
@@ -71,10 +84,14 @@ def test_branches_panel_actions() -> None:
     panel._upstream_combo.setCurrentIndex(0)
     panel._emit_set_upstream()
 
+    panel._remote_branch_combo.setCurrentIndex(0)
+    panel._emit_delete_remote()
+
     assert switched == ["dev"]
     assert created == [("feature-x", "main")]
     assert deleted == [("dev", True)]
     assert upstreams
+    assert deleted_remote == [("origin", "main")]
 
 
 def test_log_panel_sets_commits() -> None:

@@ -40,6 +40,7 @@ Git notes (docs/notes/git/)
 - git/parse_diff.md: Diff parsing scope (raw for now).
 - git/parse_log.md: Log parsing plan with separators.
 - git/parse_remotes.md: Remote list parsing plan.
+- git/parse_remote_branches.md: Remote branch parsing plan.
 - git/parse_status.md: Status parsing plan for porcelain v2.
 - git/parse_stash.md: Stash list parsing plan with separators.
 - git/parse_tags.md: Tag list parsing plan.
@@ -80,6 +81,7 @@ Test notes (docs/notes/tests/)
 - tests/parse_stash.md: What parse_stash tests assert.
 - tests/parse_tags.md: What parse_tags tests assert.
 - tests/parse_remotes.md: What parse_remotes tests assert.
+- tests/parse_remote_branches.md: What parse_remote_branches tests assert.
 - tests/parsers_property.md: Property tests for parsers.
 - tests/git_service.md: What GitService tests assert.
 - tests/git_runner.md: What GitRunner tests assert.

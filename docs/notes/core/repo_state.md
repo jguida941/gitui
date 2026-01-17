@@ -9,6 +9,7 @@ Fields
 - status: latest RepoStatus snapshot or None.
 - log: latest list of Commit objects or None.
 - branches: latest list of Branch objects or None.
+- remote_branches: latest list of RemoteBranch objects or None.
 - stashes: latest list of StashEntry objects or None.
 - tags: latest list of Tag objects or None.
 - remotes: latest list of Remote objects or None.

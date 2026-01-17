@@ -18,7 +18,7 @@ Implemented
 - CommandQueue + RepoController/RepoState wiring with live console output.
 - Repo picker + status/diff workflow (staged/unstaged/untracked/conflicted lists).
 - Commit + fetch/pull/push actions.
-- Branch/log/stash/tag/remote panels with wired actions (switch/create/delete, stash save/apply/pop/drop, tag create/delete/push, remote add/remove/set-url).
+- Branch/log/stash/tag/remote panels with wired actions (switch/create/delete, remote branch list/delete, stash save/apply/pop/drop, tag create/delete/push, remote add/remove/set-url).
 - Theme engine + editor (presets, undo/redo, live preview, JSON/QSS import/export).
 
 Planned

@@ -27,6 +27,7 @@ Current tree (placeholder scaffold):
 │   │   ├── git_runner.py
 │   │   ├── git_service.py
 │   │   ├── parse_branches.py
+│   │   ├── parse_remote_branches.py
 │   │   ├── parse_conflicts.py
 │   │   ├── parse_diff.py
 │   │   ├── parse_log.py
@@ -99,6 +100,7 @@ Current tree (placeholder scaffold):
 │   │   │   ├── git_service.md
 │   │   │   ├── insights.md
 │   │   │   ├── parse_branches.md
+│   │   │   ├── parse_remote_branches.md
 │   │   │   ├── parse_conflicts.md
 │   │   │   ├── parse_diff.md
 │   │   │   ├── parse_log.md
@@ -151,6 +153,7 @@ Current tree (placeholder scaffold):
 │   │       ├── git_service.md
 │   │       ├── main.md
 │   │       ├── parse_branches.md
+│   │       ├── parse_remote_branches.md
 │   │       ├── parse_conflicts.md
 │   │       ├── parse_diff.md
 │   │       ├── parse_log.md
@@ -189,6 +192,7 @@ Current tree (placeholder scaffold):
     ├── test_main.py
     ├── test_main_window.py
     ├── test_parse_branches.py
+    ├── test_parse_remote_branches.py
     ├── test_parse_conflicts.py
     ├── test_parse_diff.py
     ├── test_parse_log.py

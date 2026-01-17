@@ -169,6 +169,7 @@ class MainWindow(QMainWindow):
         self._branches_panel.create_requested.connect(self._controller.create_branch)
         self._branches_panel.delete_requested.connect(self._controller.delete_branch)
         self._branches_panel.set_upstream_requested.connect(self._controller.set_upstream)
+        self._branches_panel.delete_remote_requested.connect(self._confirm_delete_remote_branch)
 
         self._log_panel.refresh_requested.connect(self._controller.refresh_log)
 
@@ -212,6 +213,7 @@ class MainWindow(QMainWindow):
         self._status_panel.set_status(self._state.status)
         self._log_panel.set_commits(list(self._state.log or []))
         self._branches_panel.set_branches(list(self._state.branches or []))
+        self._branches_panel.set_remote_branches(list(self._state.remote_branches or []))
         self._stash_panel.set_stashes(list(self._state.stashes or []))
         self._tags_panel.set_tags(list(self._state.tags or []))
         self._remotes_panel.set_remotes(list(self._state.remotes or []))
@@ -313,6 +315,19 @@ class MainWindow(QMainWindow):
         ):
             return
         self._controller.discard(paths)
+
+    def _confirm_delete_remote_branch(self, remote: str, name: str) -> None:
+        """Confirm before deleting a remote branch."""
+        if not remote or not name:
+            return
+        if not ConfirmDialog.ask(
+            self,
+            "Delete Remote Branch",
+            f"Delete '{remote}/{name}' on the remote? This cannot be undone.",
+            confirm_text="Delete Remote",
+        ):
+            return
+        self._controller.delete_remote_branch(remote, name)
 
     def _maybe_handle_push_no_upstream(self, error: CommandFailed) -> bool:
         """Offer to set upstream and re-push when git reports missing upstream."""

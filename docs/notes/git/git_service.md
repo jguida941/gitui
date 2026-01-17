@@ -16,6 +16,7 @@ Current intents (raw)
 - push(repo_path, set_upstream, remote, branch)
 - log_raw(repo_path, limit)
 - branches_raw(repo_path)
+- remote_branches_raw(repo_path)
 - conflicts_raw(repo_path)
 - stash_list_raw(repo_path)
 - stash_save(repo_path, message, include_untracked)
@@ -35,6 +36,7 @@ Current intents (raw)
 - switch_branch(repo_path, name)
 - create_branch(repo_path, name, from_ref)
 - delete_branch(repo_path, name, force)
+- delete_remote_branch(repo_path, remote, name)
 - is_inside_work_tree_raw(repo_path)
 - version_raw()
 
@@ -43,6 +45,7 @@ Parsing helpers
 - parse_log(payload) -> list[Commit]
 - parse_diff(payload) -> str
 - parse_branches(payload) -> list[Branch]
+- parse_remote_branches(payload) -> list[RemoteBranch]
 - parse_conflicts(payload) -> list[str]
 - parse_stashes(payload) -> list[StashEntry]
 - parse_tags(payload) -> list[Tag]

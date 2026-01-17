@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from app.core.models import Branch, BranchInfo, Commit, RepoStatus
+from app.core.models import Branch, BranchInfo, Commit, RemoteBranch, RepoStatus
 from app.core.repo_state import RepoState
 
 
@@ -10,6 +10,7 @@ def test_initial_state_is_empty() -> None:
     assert state.status is None
     assert state.log is None
     assert state.branches is None
+    assert state.remote_branches is None
     assert state.diff_text is None
     assert state.last_error is None
     assert state.busy is False
@@ -83,6 +84,18 @@ def test_set_branches_emits_signal() -> None:
     state.set_branches(branches)
 
     assert state.branches == branches
+    assert len(emissions) == 1
+
+
+def test_set_remote_branches_emits_signal() -> None:
+    state = RepoState()
+    emissions: list[str] = []
+    state.state_changed.connect(lambda: emissions.append("changed"))
+
+    branches = [RemoteBranch(remote="origin", name="main", full_name="origin/main")]
+    state.set_remote_branches(branches)
+
+    assert state.remote_branches == branches
     assert len(emissions) == 1
 
 

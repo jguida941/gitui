@@ -8,6 +8,7 @@ Context
 
 Decision
 - Prefer machine-readable formats (e.g., `status --porcelain=v2 -z`, record separators for log).
+- Use `git branch --format=...` (local + remote) to avoid parsing human branch output.
 - Only parse human output when no machine format exists.
 
 Consequences

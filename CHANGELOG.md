@@ -65,6 +65,8 @@ All notable changes to this project will be documented here.
 - Launcher script (`scripts/run_gitui.py`) for clean app startup.
 - New UI/theme/dialog tests to keep per-file coverage green.
 - Push failure prompt for missing upstreams with automatic retry.
+- Remote branch listing + delete-remote action via push --delete.
+- Remote branch parser with tests and docs notes.
 
 ### Changed
 - Docs structure and agent contract for learning workflow.
@@ -91,6 +93,7 @@ All notable changes to this project will be documented here.
 - Theme initialization moved to ThemeEngine.
 - Discard actions now prompt for confirmation and error dialogs show command details.
 - Theme modules now live under `app/ui/theme/` with updated imports.
+- ADR-0003 now notes machine-readable branch listing via `git branch --format`.
 
 ### Fixed
 - Ruff import cleanup in command models.
