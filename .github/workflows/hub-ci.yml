@@ -49,9 +49,9 @@ permissions:
 
 jobs:
   ci:
-    uses: jguida941/hub-release/.github/workflows/hub-ci.yml@main
+    uses: jguida941/ci-cd-hub/.github/workflows/hub-ci.yml@v1
     with:
       hub_correlation_id: ${{ github.event.inputs.hub_correlation_id || '' }}
-      hub_repo: ${{ vars.HUB_REPO || 'jguida941/hub-release' }}
-      hub_ref: ${{ vars.HUB_REF || 'main' }}
+      hub_repo: ${{ vars.HUB_REPO || 'jguida941/ci-cd-hub' }}
+      hub_ref: ${{ vars.HUB_REF || 'v1' }}
     secrets: inherit
