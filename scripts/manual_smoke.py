@@ -13,8 +13,8 @@ try:
 except ModuleNotFoundError:
     QCoreApplication = None
 
-from app.exec.command_runner import CommandRunner
-from app.git.git_runner import GitRunner
+from app.exec.command_runner import CommandRunner  # noqa: E402
+from app.git.git_runner import GitRunner  # noqa: E402
 
 
 def main() -> int:

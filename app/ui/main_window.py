@@ -6,7 +6,6 @@ from PySide6.QtWidgets import QMainWindow, QSplitter, QTabWidget, QVBoxLayout, Q
 
 from app.core.controller import RepoController
 from app.core.errors import CommandFailed
-from app.core.repo_state import RepoState
 from app.exec.command_runner import CommandRunner
 from app.git.git_runner import GitRunner
 from app.git.git_service import GitService
@@ -15,15 +14,15 @@ from app.ui.commit_panel import CommitPanel
 from app.ui.console_widget import ConsoleWidget
 from app.ui.dialogs.confirm_dialog import ConfirmDialog
 from app.ui.dialogs.error_dialog import ErrorDialog
-from app.ui.theme.theme_editor_dialog import ThemeEditorDialog
 from app.ui.diff_viewer import DiffViewer
 from app.ui.git_toolbar import GitToolbar
 from app.ui.log_panel import LogPanel
 from app.ui.remotes_panel import RemotesPanel
 from app.ui.repo_picker import RepoPicker
-from app.ui.status_panel import StatusPanel
 from app.ui.stash_panel import StashPanel
+from app.ui.status_panel import StatusPanel
 from app.ui.tags_panel import TagsPanel
+from app.ui.theme.theme_editor_dialog import ThemeEditorDialog
 
 
 class MainWindow(QMainWindow):
@@ -164,12 +163,18 @@ class MainWindow(QMainWindow):
         self._status_panel.discard_requested.connect(self._confirm_discard)
         self._commit_panel.commit_requested.connect(self._controller.commit)
 
-        self._branches_panel.refresh_requested.connect(self._controller.refresh_branches)
+        self._branches_panel.refresh_requested.connect(
+            self._controller.refresh_branches
+        )
         self._branches_panel.switch_requested.connect(self._controller.switch_branch)
         self._branches_panel.create_requested.connect(self._controller.create_branch)
         self._branches_panel.delete_requested.connect(self._controller.delete_branch)
-        self._branches_panel.set_upstream_requested.connect(self._controller.set_upstream)
-        self._branches_panel.delete_remote_requested.connect(self._confirm_delete_remote_branch)
+        self._branches_panel.set_upstream_requested.connect(
+            self._controller.set_upstream
+        )
+        self._branches_panel.delete_remote_requested.connect(
+            self._confirm_delete_remote_branch
+        )
 
         self._log_panel.refresh_requested.connect(self._controller.refresh_log)
 
@@ -203,8 +208,12 @@ class MainWindow(QMainWindow):
 
         # Log command lifecycle + output so users can see what git did.
         self._runner.command_started.connect(self._on_command_started)
-        self._runner.command_stdout.connect(lambda _h, data: self._console.append_stdout(data))
-        self._runner.command_stderr.connect(lambda _h, data: self._console.append_stderr(data))
+        self._runner.command_stdout.connect(
+            lambda _h, data: self._console.append_stdout(data)
+        )
+        self._runner.command_stderr.connect(
+            lambda _h, data: self._console.append_stderr(data)
+        )
         self._runner.command_finished.connect(self._on_command_finished)
 
     def _refresh_from_state(self) -> None:
@@ -213,7 +222,9 @@ class MainWindow(QMainWindow):
         self._status_panel.set_status(self._state.status)
         self._log_panel.set_commits(list(self._state.log or []))
         self._branches_panel.set_branches(list(self._state.branches or []))
-        self._branches_panel.set_remote_branches(list(self._state.remote_branches or []))
+        self._branches_panel.set_remote_branches(
+            list(self._state.remote_branches or [])
+        )
         self._stash_panel.set_stashes(list(self._state.stashes or []))
         self._tags_panel.set_tags(list(self._state.tags or []))
         self._remotes_panel.set_remotes(list(self._state.remotes or []))

@@ -100,7 +100,9 @@ class DummyService:
         self.remote_branches_calls += 1
         return self._handle(["git", "branch", "-r"], repo_path)
 
-    def diff_file_raw(self, repo_path: str, path: str, staged: bool = False) -> RunHandle:
+    def diff_file_raw(
+        self, repo_path: str, path: str, staged: bool = False
+    ) -> RunHandle:
         self.diff_calls += 1
         args = ["git", "diff"]
         if staged:
@@ -122,7 +124,9 @@ class DummyService:
 
     def conflicts_raw(self, repo_path: str) -> RunHandle:
         self.conflicts_calls += 1
-        return self._handle(["git", "diff", "--name-only", "--diff-filter=U"], repo_path)
+        return self._handle(
+            ["git", "diff", "--name-only", "--diff-filter=U"], repo_path
+        )
 
     def stage(self, repo_path: str, paths: list[str]) -> RunHandle:
         self.stage_calls += 1
@@ -147,11 +151,15 @@ class DummyService:
         self.switch_branch_calls += 1
         return self._handle(["git", "switch", name], repo_path)
 
-    def create_branch(self, repo_path: str, name: str, from_ref: str = "HEAD") -> RunHandle:
+    def create_branch(
+        self, repo_path: str, name: str, from_ref: str = "HEAD"
+    ) -> RunHandle:
         self.create_branch_calls += 1
         return self._handle(["git", "switch", "-c", name, from_ref], repo_path)
 
-    def delete_branch(self, repo_path: str, name: str, force: bool = False) -> RunHandle:
+    def delete_branch(
+        self, repo_path: str, name: str, force: bool = False
+    ) -> RunHandle:
         self.delete_branch_calls += 1
         args = ["git", "branch", "-D" if force else "-d", name]
         return self._handle(args, repo_path)
@@ -161,7 +169,10 @@ class DummyService:
         return self._handle(["git", "push", remote, "--delete", name], repo_path)
 
     def stash_save(
-        self, repo_path: str, message: str | None = None, include_untracked: bool = False
+        self,
+        repo_path: str,
+        message: str | None = None,
+        include_untracked: bool = False,
     ) -> RunHandle:
         self.stash_save_calls += 1
         args = ["git", "stash", "push"]
@@ -192,7 +203,9 @@ class DummyService:
             args.append(ref)
         return self._handle(args, repo_path)
 
-    def create_tag(self, repo_path: str, name: str, ref: str | None = None) -> RunHandle:
+    def create_tag(
+        self, repo_path: str, name: str, ref: str | None = None
+    ) -> RunHandle:
         self.create_tag_calls += 1
         args = ["git", "tag", name]
         if ref:
@@ -223,7 +236,9 @@ class DummyService:
         self.set_remote_url_calls += 1
         return self._handle(["git", "remote", "set-url", name, url], repo_path)
 
-    def set_upstream(self, repo_path: str, upstream: str, branch: str | None = None) -> RunHandle:
+    def set_upstream(
+        self, repo_path: str, upstream: str, branch: str | None = None
+    ) -> RunHandle:
         self.set_upstream_calls += 1
         args = ["git", "branch", "--set-upstream-to", upstream]
         if branch:
@@ -234,7 +249,9 @@ class DummyService:
         if self.parse_status_error:
             raise self.parse_status_error
         return RepoStatus(
-            branch=BranchInfo(name="main", head_oid=None, upstream=None, ahead=0, behind=0),
+            branch=BranchInfo(
+                name="main", head_oid=None, upstream=None, ahead=0, behind=0
+            ),
             staged=[],
             unstaged=[],
             untracked=[],
@@ -623,7 +640,9 @@ def test_request_diff_updates_state() -> None:
         ("set_upstream", ["origin/main"], {"branch": "main"}),
     ],
 )
-def test_methods_require_repo_path(method_name: str, args: list[object], kwargs: dict[str, object]) -> None:
+def test_methods_require_repo_path(
+    method_name: str, args: list[object], kwargs: dict[str, object]
+) -> None:
     service = DummyService()
     controller = RepoController(service)
 
@@ -656,11 +675,18 @@ def test_methods_require_repo_path(method_name: str, args: list[object], kwargs:
         ("push_tags", [], {}, "push_tags_calls"),
         ("add_remote", ["origin", "https://example.com"], {}, "add_remote_calls"),
         ("remove_remote", ["origin"], {}, "remove_remote_calls"),
-        ("set_remote_url", ["origin", "https://example.com"], {}, "set_remote_url_calls"),
+        (
+            "set_remote_url",
+            ["origin", "https://example.com"],
+            {},
+            "set_remote_url_calls",
+        ),
         ("set_upstream", ["origin/main"], {"branch": "main"}, "set_upstream_calls"),
     ],
 )
-def test_methods_call_service(method_name: str, args: list[object], kwargs: dict[str, object], counter: str) -> None:
+def test_methods_call_service(
+    method_name: str, args: list[object], kwargs: dict[str, object], counter: str
+) -> None:
     service = DummyService()
     controller = RepoController(service)
     controller.state.set_repo_path("/repo")
@@ -687,8 +713,12 @@ def test_commit_triggers_status_and_log_refresh() -> None:
     assert service.log_calls == 1
 
 
-@pytest.mark.parametrize(("method_name", "args"), [("unstage", [["file.txt"]]), ("discard", [["file.txt"]])])
-def test_unstage_and_discard_trigger_status_refresh(method_name: str, args: list[object]) -> None:
+@pytest.mark.parametrize(
+    ("method_name", "args"), [("unstage", [["file.txt"]]), ("discard", [["file.txt"]])]
+)
+def test_unstage_and_discard_trigger_status_refresh(
+    method_name: str, args: list[object]
+) -> None:
     service = DummyService()
     controller = RepoController(service)
 
@@ -760,7 +790,10 @@ def test_delete_remote_branch_refreshes_branches() -> None:
     ],
 )
 def test_stash_actions_refresh(
-    method_name: str, kwargs: dict[str, object], expect_status: bool, expect_stashes: bool
+    method_name: str,
+    kwargs: dict[str, object],
+    expect_status: bool,
+    expect_stashes: bool,
 ) -> None:
     service = DummyService()
     controller = RepoController(service)

@@ -1,4 +1,5 @@
 """Dialog widgets for GitUI."""
+
 from __future__ import annotations
 
 from app.ui.dialogs.confirm_dialog import ConfirmDialog

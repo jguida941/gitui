@@ -1,4 +1,5 @@
 """Tags panel with list and tag actions."""
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal

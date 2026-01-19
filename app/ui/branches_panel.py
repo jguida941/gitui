@@ -1,4 +1,5 @@
 """Branches panel with list and actions."""
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal
@@ -40,7 +41,9 @@ class BranchesPanel(QWidget):
 
         self._remote_tree = QTreeWidget()
         self._remote_tree.setHeaderLabels(["Remote", "Branch"])
-        self._remote_tree.itemSelectionChanged.connect(self._on_remote_selection_changed)
+        self._remote_tree.itemSelectionChanged.connect(
+            self._on_remote_selection_changed
+        )
 
         self._branch_combo = QComboBox()
         self._branch_combo.setToolTip("Select a branch for actions")
@@ -181,7 +184,9 @@ class BranchesPanel(QWidget):
             item = QTreeWidgetItem([branch.remote, branch.name])
             item.setData(0, Qt.UserRole, (branch.remote, branch.name))
             self._remote_tree.addTopLevelItem(item)
-            self._remote_branch_combo.addItem(branch.full_name, (branch.remote, branch.name))
+            self._remote_branch_combo.addItem(
+                branch.full_name, (branch.remote, branch.name)
+            )
 
         if current_remote:
             index = self._remote_branch_combo.findData(current_remote)

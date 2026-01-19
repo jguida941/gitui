@@ -72,7 +72,9 @@ class DummyService:
         self.branches_calls += 1
         return self._handle(["git", "branch"], repo_path)
 
-    def diff_file_raw(self, repo_path: str, path: str, staged: bool = False) -> RunHandle:
+    def diff_file_raw(
+        self, repo_path: str, path: str, staged: bool = False
+    ) -> RunHandle:
         self.diff_calls += 1
         return self._handle(["git", "diff", path], repo_path)
 
@@ -115,7 +117,9 @@ class DummyService:
 
     def parse_status(self, _payload: bytes) -> RepoStatus:
         return RepoStatus(
-            branch=BranchInfo(name="main", head_oid=None, upstream=None, ahead=0, behind=0),
+            branch=BranchInfo(
+                name="main", head_oid=None, upstream=None, ahead=0, behind=0
+            ),
             staged=[],
             unstaged=[],
             untracked=[],

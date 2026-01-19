@@ -72,10 +72,16 @@ class CommandRunner(QObject):
 
         # Wire output and completion signals for this run.
         # The lambda captures run_id so signals map back to the right handle.
-        process.readyReadStandardOutput.connect(lambda rid=handle.run_id: self._on_stdout(rid))
-        process.readyReadStandardError.connect(lambda rid=handle.run_id: self._on_stderr(rid))
+        process.readyReadStandardOutput.connect(
+            lambda rid=handle.run_id: self._on_stdout(rid)
+        )
+        process.readyReadStandardError.connect(
+            lambda rid=handle.run_id: self._on_stderr(rid)
+        )
         process.finished.connect(
-            lambda exit_code, _status, rid=handle.run_id: self._on_finished(rid, exit_code)
+            lambda exit_code, _status, rid=handle.run_id: self._on_finished(
+                rid, exit_code
+            )
         )
 
         # Kick off the process and announce it started.

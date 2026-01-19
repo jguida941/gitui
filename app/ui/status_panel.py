@@ -42,13 +42,19 @@ class StatusPanel(QWidget):
             lambda: self._on_selection(self._staged_list, staged=True, allow_diff=True)
         )
         self._unstaged_list.itemSelectionChanged.connect(
-            lambda: self._on_selection(self._unstaged_list, staged=False, allow_diff=True)
+            lambda: self._on_selection(
+                self._unstaged_list, staged=False, allow_diff=True
+            )
         )
         self._untracked_list.itemSelectionChanged.connect(
-            lambda: self._on_selection(self._untracked_list, staged=False, allow_diff=False)
+            lambda: self._on_selection(
+                self._untracked_list, staged=False, allow_diff=False
+            )
         )
         self._conflicted_list.itemSelectionChanged.connect(
-            lambda: self._on_selection(self._conflicted_list, staged=False, allow_diff=False)
+            lambda: self._on_selection(
+                self._conflicted_list, staged=False, allow_diff=False
+            )
         )
 
         self._wire_context_menus()
@@ -149,15 +155,27 @@ class StatusPanel(QWidget):
 
     def _clear_all(self) -> None:
         """Clear all list widgets when no status is available."""
-        for widget in (self._staged_list, self._unstaged_list, self._untracked_list, self._conflicted_list):
+        for widget in (
+            self._staged_list,
+            self._unstaged_list,
+            self._untracked_list,
+            self._conflicted_list,
+        ):
             widget.clear()
 
-    def _on_selection(self, source: QListWidget, staged: bool, allow_diff: bool) -> None:
+    def _on_selection(
+        self, source: QListWidget, staged: bool, allow_diff: bool
+    ) -> None:
         """Emit diff requests and clear selections in other buckets."""
         if not source.selectedItems():
             return
 
-        for widget in (self._staged_list, self._unstaged_list, self._untracked_list, self._conflicted_list):
+        for widget in (
+            self._staged_list,
+            self._unstaged_list,
+            self._untracked_list,
+            self._conflicted_list,
+        ):
             if widget is source:
                 continue
             widget.blockSignals(True)

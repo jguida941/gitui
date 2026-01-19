@@ -1,0 +1,53 @@
+version: '1.0'
+repo:
+  owner: jguida941
+  name: gitui
+  language: python
+  default_branch: main
+  dispatch_workflow: hub-ci.yml
+python:
+  version: '3.12'
+  tools:
+    pytest:
+      enabled: true
+      min_coverage: 70
+    ruff:
+      enabled: true
+      max_errors: 0
+    black:
+      enabled: true
+      max_issues: 0
+    isort:
+      enabled: true
+      max_issues: 0
+    bandit:
+      enabled: true
+    pip_audit:
+      enabled: true
+    mypy:
+      enabled: false
+    mutmut:
+      enabled: false
+      min_mutation_score: 70
+    hypothesis:
+      enabled: true
+    semgrep:
+      enabled: false
+      max_findings: 0
+    trivy:
+      enabled: false
+      fail_on_high: true
+    codeql:
+      enabled: false
+    docker:
+      enabled: false
+thresholds:
+  coverage_min: 70
+  mutation_score_min: 70
+  max_critical_vulns: 0
+  max_high_vulns: 0
+reports:
+  retention_days: 30
+language: python
+install:
+  source: pypi

@@ -3,7 +3,9 @@ from app.git.parse_branches import parse_branches
 
 def test_parse_branches_basic() -> None:
     payload = (
-        b"main|*|origin/main|[ahead 1, behind 2]\nfeature||origin/feature|[behind 3]\ntopic|||\n"
+        b"main|*|origin/main|[ahead 1, behind 2]\n"
+        b"feature||origin/feature|[behind 3]\n"
+        b"topic|||\n"
     )
 
     branches = parse_branches(payload)

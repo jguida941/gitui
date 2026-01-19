@@ -12,26 +12,28 @@ Usage:
     engine.set_color("accent", "#FF00FF")
     css = engine.generate_stylesheet()
 """
+
 from __future__ import annotations
 
 import json
 import re
 from dataclasses import dataclass, field
-from typing import Any
 from pathlib import Path
+from typing import Any
 
 from PySide6.QtCore import QObject, QSettings, Signal
 from PySide6.QtGui import QColor, QFont
 from PySide6.QtWidgets import QApplication
 
-
 # ---------------------------------------------------------------------------
 # Theme Data Structures
 # ---------------------------------------------------------------------------
 
+
 @dataclass
 class ThemeColors:
     """All customizable colors in the theme."""
+
     # Backgrounds
     background: str = "#121212"
     background_alt: str = "#1E1E1E"
@@ -72,16 +74,17 @@ class ThemeColors:
     link_visited: str = "#CC66FF"
 
     def to_dict(self) -> dict[str, str]:
-        return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
 
     @classmethod
-    def from_dict(cls, data: dict[str, str]) -> "ThemeColors":
+    def from_dict(cls, data: dict[str, str]) -> ThemeColors:
         return cls(**{k: v for k, v in data.items() if hasattr(cls, k)})
 
 
 @dataclass
 class ThemeMetrics:
     """All customizable metrics/dimensions in the theme."""
+
     # Border radius
     border_radius: int = 6
     border_radius_small: int = 4
@@ -115,16 +118,17 @@ class ThemeMetrics:
     scrollbar_width: int = 12
 
     def to_dict(self) -> dict[str, Any]:
-        return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "ThemeMetrics":
+    def from_dict(cls, data: dict[str, Any]) -> ThemeMetrics:
         return cls(**{k: v for k, v in data.items() if hasattr(cls, k)})
 
 
 @dataclass
 class ThemeEffects:
     """Visual effects configuration."""
+
     # Shadows
     shadow_enabled: bool = True
     shadow_x: int = 0
@@ -142,16 +146,17 @@ class ThemeEffects:
     hover_scale: bool = False
 
     def to_dict(self) -> dict[str, Any]:
-        return {k: v for k, v in self.__dict__.items() if not k.startswith('_')}
+        return {k: v for k, v in self.__dict__.items() if not k.startswith("_")}
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "ThemeEffects":
+    def from_dict(cls, data: dict[str, Any]) -> ThemeEffects:
         return cls(**{k: v for k, v in data.items() if hasattr(cls, k)})
 
 
 @dataclass
 class ThemeState:
     """Complete theme state for undo/redo."""
+
     name: str = "Custom"
     colors: ThemeColors = field(default_factory=ThemeColors)
     metrics: ThemeMetrics = field(default_factory=ThemeMetrics)
@@ -166,7 +171,7 @@ class ThemeState:
         }
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> "ThemeState":
+    def from_dict(cls, data: dict[str, Any]) -> ThemeState:
         return cls(
             name=data.get("name", "Custom"),
             colors=ThemeColors.from_dict(data.get("colors", {})),
@@ -174,7 +179,7 @@ class ThemeState:
             effects=ThemeEffects.from_dict(data.get("effects", {})),
         )
 
-    def copy(self) -> "ThemeState":
+    def copy(self) -> ThemeState:
         return ThemeState.from_dict(self.to_dict())
 
 
@@ -202,17 +207,17 @@ def parse_qss_to_theme(qss: str) -> dict[str, Any]:
     metrics: dict[str, Any] = {}
 
     # Color pattern: matches #hex, rgb(), rgba()
-    color_pattern = r'(#[0-9A-Fa-f]{3,8}|rgba?\s*\([^)]+\))'
+    color_pattern = r"(#[0-9A-Fa-f]{3,8}|rgba?\s*\([^)]+\))"
 
     # Property-to-theme-color mappings
     color_mappings = {
-        'background-color': ['background', 'background_alt', 'surface'],
-        'background': ['background', 'background_alt', 'surface'],
-        'color': ['text', 'text_dim', 'text_disabled'],
-        'border-color': ['border', 'border_focus'],
-        'border': ['border'],
-        'selection-background-color': ['selection_bg'],
-        'selection-color': ['selection_text'],
+        "background-color": ["background", "background_alt", "surface"],
+        "background": ["background", "background_alt", "surface"],
+        "color": ["text", "text_dim", "text_disabled"],
+        "border-color": ["border", "border_focus"],
+        "border": ["border"],
+        "selection-background-color": ["selection_bg"],
+        "selection-color": ["selection_text"],
     }
 
     # Track colors we've seen for each category
@@ -220,7 +225,7 @@ def parse_qss_to_theme(qss: str) -> dict[str, Any]:
 
     # Parse QSS rules
     # Match property: value; patterns
-    prop_pattern = r'([a-zA-Z-]+)\s*:\s*([^;{}]+);'
+    prop_pattern = r"([a-zA-Z-]+)\s*:\s*([^;{}]+);"
 
     for match in re.finditer(prop_pattern, qss):
         prop_name = match.group(1).strip().lower()
@@ -234,71 +239,77 @@ def parse_qss_to_theme(qss: str) -> dict[str, Any]:
                 # Normalize the color
                 qcolor = QColor(color_val)
                 if qcolor.isValid():
-                    normalized = qcolor.name() if qcolor.alpha() == 255 else \
-                        f"rgba({qcolor.red()}, {qcolor.green()}, {qcolor.blue()}, {qcolor.alphaF():.2f})"
+                    if qcolor.alpha() == 255:
+                        normalized = qcolor.name()
+                    else:
+                        r, g, b = qcolor.red(), qcolor.green(), qcolor.blue()
+                        a = qcolor.alphaF()
+                        normalized = f"rgba({r}, {g}, {b}, {a:.2f})"
                     if normalized not in seen_colors[prop_name]:
                         seen_colors[prop_name].append(normalized)
 
         # Extract metrics
-        if prop_name == 'border-radius':
-            px_match = re.search(r'(\d+)(?:px)?', prop_value)
+        if prop_name == "border-radius":
+            px_match = re.search(r"(\d+)(?:px)?", prop_value)
             if px_match:
-                metrics['border_radius'] = int(px_match.group(1))
+                metrics["border_radius"] = int(px_match.group(1))
 
-        elif prop_name == 'padding':
-            px_match = re.search(r'(\d+)(?:px)?', prop_value)
+        elif prop_name == "padding":
+            px_match = re.search(r"(\d+)(?:px)?", prop_value)
             if px_match:
-                metrics['padding'] = int(px_match.group(1))
+                metrics["padding"] = int(px_match.group(1))
 
-        elif prop_name == 'border-width':
-            px_match = re.search(r'(\d+)(?:px)?', prop_value)
+        elif prop_name == "border-width":
+            px_match = re.search(r"(\d+)(?:px)?", prop_value)
             if px_match:
-                metrics['border_width'] = int(px_match.group(1))
+                metrics["border_width"] = int(px_match.group(1))
 
-        elif prop_name == 'font-size':
-            px_match = re.search(r'(\d+)(?:px)?', prop_value)
+        elif prop_name == "font-size":
+            px_match = re.search(r"(\d+)(?:px)?", prop_value)
             if px_match:
-                metrics['font_size'] = int(px_match.group(1))
+                metrics["font_size"] = int(px_match.group(1))
 
-        elif prop_name == 'font-family':
+        elif prop_name == "font-family":
             # Extract first font family
-            font = prop_value.split(',')[0].strip().strip('"\'')
+            font = prop_value.split(",")[0].strip().strip("\"'")
             if font:
-                metrics['font_family'] = font
+                metrics["font_family"] = font
 
     # Assign colors based on what we found
     # Background colors (first = main, second = alt, third = surface)
-    bg_colors = seen_colors.get('background-color', []) + seen_colors.get('background', [])
+    bg_colors = seen_colors.get("background-color", []) + seen_colors.get(
+        "background", []
+    )
     bg_colors = list(dict.fromkeys(bg_colors))  # Remove duplicates, preserve order
     if len(bg_colors) >= 1:
-        colors['background'] = bg_colors[0]
+        colors["background"] = bg_colors[0]
     if len(bg_colors) >= 2:
-        colors['background_alt'] = bg_colors[1]
+        colors["background_alt"] = bg_colors[1]
     if len(bg_colors) >= 3:
-        colors['surface'] = bg_colors[2]
+        colors["surface"] = bg_colors[2]
 
     # Text colors
-    text_colors = seen_colors.get('color', [])
+    text_colors = seen_colors.get("color", [])
     if len(text_colors) >= 1:
-        colors['text'] = text_colors[0]
+        colors["text"] = text_colors[0]
     if len(text_colors) >= 2:
-        colors['text_dim'] = text_colors[1]
+        colors["text_dim"] = text_colors[1]
 
     # Border colors
-    border_colors = seen_colors.get('border-color', []) + seen_colors.get('border', [])
+    border_colors = seen_colors.get("border-color", []) + seen_colors.get("border", [])
     border_colors = list(dict.fromkeys(border_colors))
     if len(border_colors) >= 1:
-        colors['border'] = border_colors[0]
+        colors["border"] = border_colors[0]
     if len(border_colors) >= 2:
-        colors['border_focus'] = border_colors[1]
+        colors["border_focus"] = border_colors[1]
 
     # Selection colors
-    sel_bg = seen_colors.get('selection-background-color', [])
+    sel_bg = seen_colors.get("selection-background-color", [])
     if sel_bg:
-        colors['selection_bg'] = sel_bg[0]
-    sel_text = seen_colors.get('selection-color', [])
+        colors["selection_bg"] = sel_bg[0]
+    sel_text = seen_colors.get("selection-color", [])
     if sel_text:
-        colors['selection_text'] = sel_text[0]
+        colors["selection_text"] = sel_text[0]
 
     # Try to detect accent color (often used in :hover, QPushButton, etc.)
     # Look for colors that aren't the main bg/text colors
@@ -319,15 +330,10 @@ def parse_qss_to_theme(qss: str) -> dict[str, Any]:
     for c in potential_accents:
         qc = QColor(c)
         if qc.saturation() > 100:  # Reasonably saturated
-            colors['accent'] = c
+            colors["accent"] = c
             break
 
-    return {
-        "name": "Imported QSS",
-        "colors": colors,
-        "metrics": metrics,
-        "effects": {}
-    }
+    return {"name": "Imported QSS", "colors": colors, "metrics": metrics, "effects": {}}
 
 
 # ---------------------------------------------------------------------------
@@ -335,10 +341,7 @@ def parse_qss_to_theme(qss: str) -> dict[str, Any]:
 # ---------------------------------------------------------------------------
 
 PRESETS: dict[str, dict[str, Any]] = {
-    "Dark": {
-        "colors": {}  # Uses all defaults
-    },
-
+    "Dark": {"colors": {}},  # Uses all defaults
     "Dark Sci-Fi": {
         "colors": {
             "accent": "#00FFAA",
@@ -347,7 +350,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "selection_bg": "#00FFAA",
         }
     },
-
     "Cyberpunk": {
         "colors": {
             "background": "#0A0A0F",
@@ -364,9 +366,8 @@ PRESETS: dict[str, dict[str, Any]] = {
         "metrics": {
             "border_width": 2,
             "border_radius": 4,
-        }
+        },
     },
-
     "Midnight Blue": {
         "colors": {
             "background": "#0D1117",
@@ -380,7 +381,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "link": "#58A6FF",
         }
     },
-
     "Dracula": {
         "colors": {
             "background": "#282A36",
@@ -401,7 +401,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "diff_header": "#8BE9FD",
         }
     },
-
     "Nord": {
         "colors": {
             "background": "#2E3440",
@@ -420,7 +419,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "link": "#88C0D0",
         }
     },
-
     "Forest": {
         "colors": {
             "background": "#1A1F16",
@@ -434,7 +432,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "selection_bg": "#7CB342",
         }
     },
-
     "Material Dark": {
         "colors": {
             "background": "#121212",
@@ -449,7 +446,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "selection_bg": "#BB86FC",
         }
     },
-
     "Material Light": {
         "colors": {
             "background": "#FAFAFA",
@@ -465,7 +461,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "selection_text": "#FFFFFF",
         }
     },
-
     "Light Modern": {
         "colors": {
             "background": "#FFFFFF",
@@ -482,7 +477,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "success": "#4CAF50",
         }
     },
-
     "Minimalist": {
         "colors": {
             "background": "#F5F5F5",
@@ -498,7 +492,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "selection_text": "#000000",
         }
     },
-
     "Corporate Blue": {
         "colors": {
             "background": "#F0F4F8",
@@ -515,7 +508,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "warning": "#ED8936",
         }
     },
-
     "Nature Green": {
         "colors": {
             "background": "#F7FAFC",
@@ -532,7 +524,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "warning": "#F6E05E",
         }
     },
-
     "Light": {
         "colors": {
             "background": "#FFFFFF",
@@ -553,7 +544,6 @@ PRESETS: dict[str, dict[str, Any]] = {
             "diff_header": "#0366D6",
         }
     },
-
     "High Contrast": {
         "colors": {
             "background": "#000000",
@@ -571,7 +561,7 @@ PRESETS: dict[str, dict[str, Any]] = {
         },
         "metrics": {
             "border_width": 2,
-        }
+        },
     },
 }
 
@@ -579,6 +569,7 @@ PRESETS: dict[str, dict[str, Any]] = {
 # ---------------------------------------------------------------------------
 # Theme Engine
 # ---------------------------------------------------------------------------
+
 
 class ThemeEngine(QObject):
     """
@@ -963,7 +954,7 @@ class ThemeEngine(QObject):
     def import_from_file(self, path: str | Path) -> bool:
         """Import theme from JSON file."""
         try:
-            with open(path, "r") as f:
+            with open(path) as f:
                 data = json.load(f)
             self._push_undo()
             self._state = ThemeState.from_dict(data)
@@ -1010,6 +1001,7 @@ class ThemeEngine(QObject):
             save: If True, saves the QSS to settings for persistence.
         """
         from PySide6.QtWidgets import QApplication
+
         app = QApplication.instance()
         if app:
             app.setStyleSheet(qss)
@@ -1032,10 +1024,14 @@ class ThemeEngine(QObject):
         c = self._state.colors
         m = self._state.metrics
         e = self._state.effects
-        button_hover = _adjust_color(c.surface, 1.08) if e.hover_brighten else c.background_alt
-        tool_hover = _adjust_color(c.surface, 1.06) if e.hover_brighten else c.background_alt
+        button_hover = (
+            _adjust_color(c.surface, 1.08) if e.hover_brighten else c.background_alt
+        )
+        tool_hover = (
+            _adjust_color(c.surface, 1.06) if e.hover_brighten else c.background_alt
+        )
 
-        return f'''
+        return f"""
 /* ═══════════════════════════════════════════════════════════════════════
    GitUI Theme: {self._state.name}
    Generated by ThemeEngine
@@ -1681,7 +1677,7 @@ QPlainTextEdit[consoleWidget="true"] {{
     font-size: {m.font_size_small}px;
     background-color: #0D0D0D;
 }}
-'''
+"""
 
     def apply_to_application(self) -> None:
         """Apply the current theme to the application."""
@@ -1700,7 +1696,7 @@ QPlainTextEdit[consoleWidget="true"] {{
         # Set application font
         font = QFont(
             self._state.metrics.font_family.split(",")[0].strip(),
-            self._state.metrics.font_size
+            self._state.metrics.font_size,
         )
         app.setFont(font)
 

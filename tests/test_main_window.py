@@ -47,6 +47,7 @@ class FakeController:
     def __getattr__(self, name: str):
         def _noop(*args, **kwargs):
             self.calls.append((name, args, kwargs))
+
         return _noop
 
     def push(self, *args, **kwargs) -> None:  # type: ignore[override]
@@ -60,7 +61,9 @@ def test_main_window_push_no_upstream_prompt(monkeypatch) -> None:
 
     controller.state.set_status(
         RepoStatus(
-            branch=BranchInfo(name="testing", head_oid=None, upstream=None, ahead=0, behind=0),
+            branch=BranchInfo(
+                name="testing", head_oid=None, upstream=None, ahead=0, behind=0
+            ),
             staged=[],
             unstaged=[],
             untracked=[],
@@ -68,7 +71,16 @@ def test_main_window_push_no_upstream_prompt(monkeypatch) -> None:
         )
     )
     controller.state.set_branches(
-        [Branch(name="testing", is_current=True, upstream=None, ahead=0, behind=0, gone=False)]
+        [
+            Branch(
+                name="testing",
+                is_current=True,
+                upstream=None,
+                ahead=0,
+                behind=0,
+                gone=False,
+            )
+        ]
     )
     controller.state.set_remotes([Remote(name="origin", fetch_url=None, push_url=None)])
 
@@ -79,7 +91,9 @@ def test_main_window_push_no_upstream_prompt(monkeypatch) -> None:
         b"fatal: The current branch testing has no upstream branch.",
     )
 
-    monkeypatch.setattr(ConfirmDialog, "ask", staticmethod(lambda *_args, **_kwargs: True))
+    monkeypatch.setattr(
+        ConfirmDialog, "ask", staticmethod(lambda *_args, **_kwargs: True)
+    )
     handled = window._maybe_handle_push_no_upstream(err)
 
     assert handled is True

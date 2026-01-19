@@ -25,5 +25,7 @@ def test_error_dialog_formats_command_failed() -> None:
 
 
 def test_confirm_dialog_ask(monkeypatch) -> None:
-    monkeypatch.setattr(ConfirmDialog, "exec", lambda *_args, **_kwargs: QDialog.Accepted)
+    monkeypatch.setattr(
+        ConfirmDialog, "exec", lambda *_args, **_kwargs: QDialog.Accepted
+    )
     assert ConfirmDialog.ask(None, "Confirm", "Proceed?") is True

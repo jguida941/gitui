@@ -51,12 +51,23 @@ def test_commit_panel_emits_commit() -> None:
 def test_branches_panel_actions() -> None:
     panel = BranchesPanel()
     branches = [
-        Branch(name="main", is_current=True, upstream="origin/main", ahead=0, behind=0, gone=False),
-        Branch(name="dev", is_current=False, upstream=None, ahead=2, behind=1, gone=False),
+        Branch(
+            name="main",
+            is_current=True,
+            upstream="origin/main",
+            ahead=0,
+            behind=0,
+            gone=False,
+        ),
+        Branch(
+            name="dev", is_current=False, upstream=None, ahead=2, behind=1, gone=False
+        ),
     ]
     panel.set_branches(branches)
     panel.set_remotes(["origin", "upstream"])
-    panel.set_remote_branches([RemoteBranch(remote="origin", name="main", full_name="origin/main")])
+    panel.set_remote_branches(
+        [RemoteBranch(remote="origin", name="main", full_name="origin/main")]
+    )
 
     switched: list[str] = []
     created: list[tuple[str, str]] = []
@@ -67,8 +78,12 @@ def test_branches_panel_actions() -> None:
     panel.switch_requested.connect(switched.append)
     panel.create_requested.connect(lambda name, start: created.append((name, start)))
     panel.delete_requested.connect(lambda name, force: deleted.append((name, force)))
-    panel.set_upstream_requested.connect(lambda upstream, branch: upstreams.append((upstream, branch)))
-    panel.delete_remote_requested.connect(lambda remote, name: deleted_remote.append((remote, name)))
+    panel.set_upstream_requested.connect(
+        lambda upstream, branch: upstreams.append((upstream, branch))
+    )
+    panel.delete_remote_requested.connect(
+        lambda remote, name: deleted_remote.append((remote, name))
+    )
 
     panel._branch_combo.setCurrentText("dev")
     panel._emit_switch()
@@ -112,7 +127,9 @@ def test_log_panel_sets_commits() -> None:
 
 def test_stash_panel_emits_actions() -> None:
     panel = StashPanel()
-    stashes = [StashEntry(oid="1", selector="stash@{0}", summary="WIP", date="2024-01-01")]
+    stashes = [
+        StashEntry(oid="1", selector="stash@{0}", summary="WIP", date="2024-01-01")
+    ]
     panel.set_stashes(stashes)
 
     saved: list[tuple[object, bool]] = []
@@ -233,10 +250,18 @@ def test_status_panel_context_menu(monkeypatch) -> None:
 
     emitted = {"stage": 0, "unstage": 0, "discard": 0, "diff": 0}
 
-    panel.stage_requested.connect(lambda _paths: emitted.__setitem__("stage", emitted["stage"] + 1))
-    panel.unstage_requested.connect(lambda _paths: emitted.__setitem__("unstage", emitted["unstage"] + 1))
-    panel.discard_requested.connect(lambda _paths: emitted.__setitem__("discard", emitted["discard"] + 1))
-    panel.diff_requested.connect(lambda _path, _staged: emitted.__setitem__("diff", emitted["diff"] + 1))
+    panel.stage_requested.connect(
+        lambda _paths: emitted.__setitem__("stage", emitted["stage"] + 1)
+    )
+    panel.unstage_requested.connect(
+        lambda _paths: emitted.__setitem__("unstage", emitted["unstage"] + 1)
+    )
+    panel.discard_requested.connect(
+        lambda _paths: emitted.__setitem__("discard", emitted["discard"] + 1)
+    )
+    panel.diff_requested.connect(
+        lambda _path, _staged: emitted.__setitem__("diff", emitted["diff"] + 1)
+    )
 
     panel._on_selection(staged, staged=True, allow_diff=True)
 

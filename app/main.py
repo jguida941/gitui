@@ -22,13 +22,16 @@ def main(argv: list[str] | None = None) -> int:
     """Launch the GUI unless explicitly disabled for tests."""
     parser = argparse.ArgumentParser(description="GitUI (PySide6)")
     parser.add_argument("--repo", help="Open a repo path on launch.")
-    parser.add_argument("--no-gui", action="store_true", help="Exit without launching Qt.")
+    parser.add_argument(
+        "--no-gui", action="store_true", help="Exit without launching Qt."
+    )
     args = parser.parse_args(argv)
 
     if args.no_gui:
         return 0
 
     from PySide6.QtWidgets import QApplication
+
     from app.ui.main_window import MainWindow
     from app.ui.theme.theme_engine import init_theme
 

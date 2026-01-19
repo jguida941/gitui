@@ -1,4 +1,5 @@
 """Stash panel for listing and applying stash entries."""
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal

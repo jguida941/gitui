@@ -1,4 +1,5 @@
 """Remotes panel for managing git remotes."""
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt, Signal

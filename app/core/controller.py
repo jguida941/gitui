@@ -92,7 +92,9 @@ class RepoController(QObject):
         """Expose the current repo state for the UI."""
         return self._state
 
-    def _enqueue(self, key: str, priority: QueuePriority, run: Callable[[], None]) -> None:
+    def _enqueue(
+        self, key: str, priority: QueuePriority, run: Callable[[], None]
+    ) -> None:
         """Add a command to the queue with the given priority."""
         self._queue.enqueue(QueueItem(key=key, run=run, priority=priority))
 
@@ -102,7 +104,9 @@ class RepoController(QObject):
         def action() -> None:
             # Ask git whether this path is inside a work tree.
             handle = self._service.is_inside_work_tree_raw(repo_path)
-            self._pending[handle.run_id] = PendingAction(kind="validate_repo", repo_path=repo_path)
+            self._pending[handle.run_id] = PendingAction(
+                kind="validate_repo", repo_path=repo_path
+            )
             self._state.set_busy(True)
 
         self._enqueue("open_repo", QueuePriority.USER, action)
@@ -152,7 +156,9 @@ class RepoController(QObject):
             self._pending[handle.run_id] = PendingAction(kind="remote_branches")
             self._state.set_busy(True)
 
-        self._enqueue("refresh_remote_branches", QueuePriority.BACKGROUND, remote_action)
+        self._enqueue(
+            "refresh_remote_branches", QueuePriority.BACKGROUND, remote_action
+        )
 
     def refresh_remote_branches(self) -> None:
         """Fetch remote branch list for the current repo."""
@@ -226,8 +232,12 @@ class RepoController(QObject):
             return
 
         def action() -> None:
-            handle = self._service.diff_file_raw(self._state.repo_path, path, staged=staged)
-            self._pending[handle.run_id] = PendingAction(kind="diff", path=path, staged=staged)
+            handle = self._service.diff_file_raw(
+                self._state.repo_path, path, staged=staged
+            )
+            self._pending[handle.run_id] = PendingAction(
+                kind="diff", path=path, staged=staged
+            )
             self._state.set_busy(True)
 
         self._enqueue("diff", QueuePriority.USER, action)
@@ -240,7 +250,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.stage(self._state.repo_path, paths)
-            self._pending[handle.run_id] = PendingAction(kind="stage", refresh_status=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="stage", refresh_status=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("stage", QueuePriority.USER, action)
@@ -253,7 +265,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.unstage(self._state.repo_path, paths)
-            self._pending[handle.run_id] = PendingAction(kind="unstage", refresh_status=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="unstage", refresh_status=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("unstage", QueuePriority.USER, action)
@@ -266,7 +280,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.discard(self._state.repo_path, paths)
-            self._pending[handle.run_id] = PendingAction(kind="discard", refresh_status=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="discard", refresh_status=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("discard", QueuePriority.USER, action)
@@ -294,7 +310,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.fetch(self._state.repo_path)
-            self._pending[handle.run_id] = PendingAction(kind="fetch", refresh_branches=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="fetch", refresh_branches=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("fetch", QueuePriority.USER, action)
@@ -307,13 +325,18 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.pull_ff_only(self._state.repo_path)
-            self._pending[handle.run_id] = PendingAction(kind="pull", refresh_status=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="pull", refresh_status=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("pull", QueuePriority.USER, action)
 
     def push(
-        self, set_upstream: bool = False, remote: str | None = None, branch: str | None = None
+        self,
+        set_upstream: bool = False,
+        remote: str | None = None,
+        branch: str | None = None,
     ) -> None:
         """Push to remote and refresh branches if needed."""
         if not self._state.repo_path:
@@ -327,7 +350,9 @@ class RepoController(QObject):
                 remote=remote,
                 branch=branch,
             )
-            self._pending[handle.run_id] = PendingAction(kind="push", refresh_branches=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="push", refresh_branches=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("push", QueuePriority.USER, action)
@@ -354,7 +379,9 @@ class RepoController(QObject):
             return
 
         def action() -> None:
-            handle = self._service.create_branch(self._state.repo_path, name, from_ref=from_ref)
+            handle = self._service.create_branch(
+                self._state.repo_path, name, from_ref=from_ref
+            )
             self._pending[handle.run_id] = PendingAction(
                 kind="create_branch", refresh_status=True, refresh_branches=True
             )
@@ -369,7 +396,9 @@ class RepoController(QObject):
             return
 
         def action() -> None:
-            handle = self._service.delete_branch(self._state.repo_path, name, force=force)
+            handle = self._service.delete_branch(
+                self._state.repo_path, name, force=force
+            )
             self._pending[handle.run_id] = PendingAction(
                 kind="delete_branch", refresh_branches=True
             )
@@ -384,7 +413,9 @@ class RepoController(QObject):
             return
 
         def action() -> None:
-            handle = self._service.delete_remote_branch(self._state.repo_path, remote, name)
+            handle = self._service.delete_remote_branch(
+                self._state.repo_path, remote, name
+            )
             self._pending[handle.run_id] = PendingAction(
                 kind="delete_remote_branch", refresh_branches=True
             )
@@ -392,7 +423,9 @@ class RepoController(QObject):
 
         self._enqueue("delete_remote_branch", QueuePriority.USER, action)
 
-    def stash_save(self, message: str | None = None, include_untracked: bool = False) -> None:
+    def stash_save(
+        self, message: str | None = None, include_untracked: bool = False
+    ) -> None:
         """Create a stash and refresh status + stashes."""
         if not self._state.repo_path:
             self._state.set_error(NotARepo("(none)"))
@@ -419,7 +452,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.stash_apply(self._state.repo_path, ref=ref)
-            self._pending[handle.run_id] = PendingAction(kind="stash_apply", refresh_status=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="stash_apply", refresh_status=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("stash_apply", QueuePriority.USER, action)
@@ -447,7 +482,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.stash_drop(self._state.repo_path, ref=ref)
-            self._pending[handle.run_id] = PendingAction(kind="stash_drop", refresh_stashes=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="stash_drop", refresh_stashes=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("stash_drop", QueuePriority.USER, action)
@@ -460,7 +497,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.create_tag(self._state.repo_path, name, ref=ref)
-            self._pending[handle.run_id] = PendingAction(kind="create_tag", refresh_tags=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="create_tag", refresh_tags=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("create_tag", QueuePriority.USER, action)
@@ -473,7 +512,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.delete_tag(self._state.repo_path, name)
-            self._pending[handle.run_id] = PendingAction(kind="delete_tag", refresh_tags=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="delete_tag", refresh_tags=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("delete_tag", QueuePriority.USER, action)
@@ -512,7 +553,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.add_remote(self._state.repo_path, name, url)
-            self._pending[handle.run_id] = PendingAction(kind="add_remote", refresh_remotes=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="add_remote", refresh_remotes=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("add_remote", QueuePriority.USER, action)
@@ -525,7 +568,9 @@ class RepoController(QObject):
 
         def action() -> None:
             handle = self._service.remove_remote(self._state.repo_path, name)
-            self._pending[handle.run_id] = PendingAction(kind="remove_remote", refresh_remotes=True)
+            self._pending[handle.run_id] = PendingAction(
+                kind="remove_remote", refresh_remotes=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("remove_remote", QueuePriority.USER, action)
@@ -552,8 +597,12 @@ class RepoController(QObject):
             return
 
         def action() -> None:
-            handle = self._service.set_upstream(self._state.repo_path, upstream, branch=branch)
-            self._pending[handle.run_id] = PendingAction(kind="set_upstream", refresh_branches=True)
+            handle = self._service.set_upstream(
+                self._state.repo_path, upstream, branch=branch
+            )
+            self._pending[handle.run_id] = PendingAction(
+                kind="set_upstream", refresh_branches=True
+            )
             self._state.set_busy(True)
 
         self._enqueue("set_upstream", QueuePriority.USER, action)

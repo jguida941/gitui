@@ -21,7 +21,9 @@ def _ensure_qt_app() -> None:
         QCoreApplication([])
 
 
-def _wait_for_finished(runner: CommandRunner, timeout_ms: int = 2000) -> dict[str, object]:
+def _wait_for_finished(
+    runner: CommandRunner, timeout_ms: int = 2000
+) -> dict[str, object]:
     loop = QEventLoop()
     done: dict[str, object] = {}
 

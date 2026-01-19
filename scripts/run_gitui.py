@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Launch GitUI with correct Python path."""
+
 from __future__ import annotations
 
 import os
@@ -13,4 +14,5 @@ os.chdir(REPO_ROOT)
 
 if __name__ == "__main__":
     from app.main import main
+
     raise SystemExit(main())

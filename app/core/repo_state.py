@@ -2,12 +2,21 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from app.core.models import Branch, Commit, Remote, RemoteBranch, RepoStatus, StashEntry, Tag
+from app.core.models import (
+    Branch,
+    Commit,
+    Remote,
+    RemoteBranch,
+    RepoStatus,
+    StashEntry,
+    Tag,
+)
 from app.utils.qt_compat import QObject, Signal
 
 # RepoState is the single source of truth for UI data.
 # We centralize state here so UI widgets can subscribe to one signal and avoid
 # brittle partial-update logic spread across the UI.
+
 
 class RepoState(QObject):
     """Mutable state for the current repository view."""

@@ -2,7 +2,15 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
-from app.core.models import Branch, Commit, Remote, RemoteBranch, RepoStatus, StashEntry, Tag
+from app.core.models import (
+    Branch,
+    Commit,
+    Remote,
+    RemoteBranch,
+    RepoStatus,
+    StashEntry,
+    Tag,
+)
 from app.exec.command_models import RunHandle
 from app.exec.command_runner import CommandRunner
 from app.git.git_runner import GitRunner
@@ -10,8 +18,8 @@ from app.git.parse_branches import parse_branches
 from app.git.parse_conflicts import parse_conflict_paths
 from app.git.parse_diff import parse_diff_text
 from app.git.parse_log import parse_log_records
-from app.git.parse_remotes import parse_remotes
 from app.git.parse_remote_branches import parse_remote_branches
+from app.git.parse_remotes import parse_remotes
 from app.git.parse_stash import parse_stash_records
 from app.git.parse_status import parse_status_porcelain_v2
 from app.git.parse_tags import parse_tags
@@ -75,7 +83,9 @@ class GitService:
             cwd=repo_path,
         )
 
-    def diff_file_raw(self, repo_path: str, path: str, staged: bool = False) -> RunHandle:
+    def diff_file_raw(
+        self, repo_path: str, path: str, staged: bool = False
+    ) -> RunHandle:
         """Run git diff for a single file."""
         # --no-color: Raw diff without ANSI escape codes
         # --cached: Show staged changes (index vs HEAD) instead of working tree
@@ -125,14 +135,22 @@ class GitService:
         args = ["push"]
         if set_upstream:
             if not remote or not branch:
-                raise ValueError("remote and branch are required when set_upstream is True")
+                raise ValueError(
+                    "remote and branch are required when set_upstream is True"
+                )
             args.extend(["-u", remote, branch])
         return self._runner.run(args, cwd=repo_path)
 
     def log_raw(self, repo_path: str, limit: int = 300) -> RunHandle:
         """Return structured log output for recent commits."""
         return self._runner.run(
-            ["log", "--date=iso-strict", f"--pretty=format:{LOG_FORMAT}", "-n", str(limit)],
+            [
+                "log",
+                "--date=iso-strict",
+                f"--pretty=format:{LOG_FORMAT}",
+                "-n",
+                str(limit),
+            ],
             cwd=repo_path,
         )
 
@@ -142,10 +160,15 @@ class GitService:
 
     def remote_branches_raw(self, repo_path: str) -> RunHandle:
         """List remote-tracking branches."""
-        return self._runner.run(["branch", "-r", "--format=%(refname:short)"], cwd=repo_path)
+        return self._runner.run(
+            ["branch", "-r", "--format=%(refname:short)"], cwd=repo_path
+        )
+
     def conflicts_raw(self, repo_path: str) -> RunHandle:
         """List conflicted paths using diff-filter=U."""
-        return self._runner.run(["diff", "--name-only", "--diff-filter=U"], cwd=repo_path)
+        return self._runner.run(
+            ["diff", "--name-only", "--diff-filter=U"], cwd=repo_path
+        )
 
     def stash_list_raw(self, repo_path: str) -> RunHandle:
         """List stashes using structured output for parsing."""
@@ -155,7 +178,10 @@ class GitService:
         )
 
     def stash_save(
-        self, repo_path: str, message: str | None = None, include_untracked: bool = False
+        self,
+        repo_path: str,
+        message: str | None = None,
+        include_untracked: bool = False,
     ) -> RunHandle:
         """Create a stash with an optional message."""
         args = ["stash", "push"]
@@ -190,7 +216,9 @@ class GitService:
         """List tags in the repo."""
         return self._runner.run(["tag", "--list"], cwd=repo_path)
 
-    def create_tag(self, repo_path: str, name: str, ref: str | None = None) -> RunHandle:
+    def create_tag(
+        self, repo_path: str, name: str, ref: str | None = None
+    ) -> RunHandle:
         """Create a lightweight tag at the given ref (default HEAD)."""
         args = ["tag", name]
         if ref:
@@ -225,7 +253,9 @@ class GitService:
         """Update a remote's URL."""
         return self._runner.run(["remote", "set-url", name, url], cwd=repo_path)
 
-    def set_upstream(self, repo_path: str, upstream: str, branch: str | None = None) -> RunHandle:
+    def set_upstream(
+        self, repo_path: str, upstream: str, branch: str | None = None
+    ) -> RunHandle:
         """Set upstream tracking for a branch (default: current branch)."""
         args = ["branch", "--set-upstream-to", upstream]
         if branch:
@@ -236,11 +266,15 @@ class GitService:
         """Switch to an existing branch."""
         return self._runner.run(["switch", name], cwd=repo_path)
 
-    def create_branch(self, repo_path: str, name: str, from_ref: str = "HEAD") -> RunHandle:
+    def create_branch(
+        self, repo_path: str, name: str, from_ref: str = "HEAD"
+    ) -> RunHandle:
         """Create and switch to a new branch."""
         return self._runner.run(["switch", "-c", name, from_ref], cwd=repo_path)
 
-    def delete_branch(self, repo_path: str, name: str, force: bool = False) -> RunHandle:
+    def delete_branch(
+        self, repo_path: str, name: str, force: bool = False
+    ) -> RunHandle:
         """Delete a local branch."""
         flag = "-D" if force else "-d"
         return self._runner.run(["branch", flag, name], cwd=repo_path)

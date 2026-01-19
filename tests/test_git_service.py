@@ -39,7 +39,14 @@ def test_git_service_diff_file_raw_staged_and_unstaged() -> None:
 
     service.diff_file_raw("/repo", "file.txt", staged=True)
     spec = fake.calls[-1]
-    assert list(spec.args) == ["git", "diff", "--no-color", "--cached", "--", "file.txt"]
+    assert list(spec.args) == [
+        "git",
+        "diff",
+        "--no-color",
+        "--cached",
+        "--",
+        "file.txt",
+    ]
 
 
 def test_git_service_stage_unstage_discard() -> None:
@@ -191,7 +198,13 @@ def test_git_service_remotes_raw_and_actions() -> None:
 
     service.add_remote("/repo", "origin", "https://example.com/repo.git")
     spec = fake.calls[-1]
-    assert list(spec.args) == ["git", "remote", "add", "origin", "https://example.com/repo.git"]
+    assert list(spec.args) == [
+        "git",
+        "remote",
+        "add",
+        "origin",
+        "https://example.com/repo.git",
+    ]
 
     service.remove_remote("/repo", "origin")
     spec = fake.calls[-1]
@@ -199,7 +212,13 @@ def test_git_service_remotes_raw_and_actions() -> None:
 
     service.set_remote_url("/repo", "origin", "https://example.com/new.git")
     spec = fake.calls[-1]
-    assert list(spec.args) == ["git", "remote", "set-url", "origin", "https://example.com/new.git"]
+    assert list(spec.args) == [
+        "git",
+        "remote",
+        "set-url",
+        "origin",
+        "https://example.com/new.git",
+    ]
 
     service.delete_remote_branch("/repo", "origin", "feature-x")
     spec = fake.calls[-1]
@@ -207,7 +226,13 @@ def test_git_service_remotes_raw_and_actions() -> None:
 
     service.set_upstream("/repo", "origin/main", branch="main")
     spec = fake.calls[-1]
-    assert list(spec.args) == ["git", "branch", "--set-upstream-to", "origin/main", "main"]
+    assert list(spec.args) == [
+        "git",
+        "branch",
+        "--set-upstream-to",
+        "origin/main",
+        "main",
+    ]
 
 
 def test_git_service_branch_actions() -> None:

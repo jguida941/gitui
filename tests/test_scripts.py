@@ -19,7 +19,9 @@ def test_check_coverage_passes(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     assert check_coverage.main() == 0
 
 
-def test_check_coverage_fails_below_threshold(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_check_coverage_fails_below_threshold(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     payload = {"files": {"app/x.py": {"summary": {"percent_covered": 50.0}}}}
     coverage_path = tmp_path / "coverage.json"
     coverage_path.write_text(json.dumps(payload), encoding="utf-8")
@@ -28,13 +30,17 @@ def test_check_coverage_fails_below_threshold(tmp_path: Path, monkeypatch: pytes
     assert check_coverage.main() == 1
 
 
-def test_check_coverage_missing_file(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_check_coverage_missing_file(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     coverage_path = tmp_path / "missing.json"
     monkeypatch.setattr(sys, "argv", ["check_coverage.py", str(coverage_path)])
     assert check_coverage.main() == 2
 
 
-def test_manual_smoke_main_uses_fake_runner(monkeypatch: pytest.MonkeyPatch, capsys) -> None:
+def test_manual_smoke_main_uses_fake_runner(
+    monkeypatch: pytest.MonkeyPatch, capsys
+) -> None:
     class DummySignal:
         def __init__(self) -> None:
             self._handlers: list = []

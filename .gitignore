@@ -32,3 +32,4 @@ build/
 .claude/
 AGENTS.md
 docs/agents.md
+.cihub/

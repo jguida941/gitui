@@ -4,6 +4,7 @@ Compatibility layer over ThemeEngine.
 This keeps the older theme API stable while delegating to the richer
 ThemeEngine used by the editor UI.
 """
+
 from __future__ import annotations
 
 from typing import Any
@@ -63,7 +64,9 @@ def apply_theme(
     engine.apply_theme(name, colors=colors, metrics=metrics, save=save)
 
 
-def save_custom_theme(name: str, colors: dict[str, str], metrics: dict[str, Any]) -> None:
+def save_custom_theme(
+    name: str, colors: dict[str, str], metrics: dict[str, Any]
+) -> None:
     """Save a custom theme."""
     engine = get_engine()
     engine.apply_theme(name, colors=colors, metrics=metrics, save=False)

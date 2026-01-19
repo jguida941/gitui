@@ -1,4 +1,5 @@
 """Live preview widget for the theme editor."""
+
 from __future__ import annotations
 
 from PySide6.QtCore import Qt
@@ -6,25 +7,24 @@ from PySide6.QtGui import QColor
 from PySide6.QtWidgets import (
     QCheckBox,
     QComboBox,
+    QGraphicsDropShadowEffect,
     QGroupBox,
     QHBoxLayout,
-    QLabel,
     QLineEdit,
     QListWidget,
     QListWidgetItem,
     QPlainTextEdit,
     QProgressBar,
+    QPushButton,
     QRadioButton,
     QSlider,
     QSpinBox,
     QTableWidget,
     QTableWidgetItem,
+    QTextEdit,
     QToolButton,
     QVBoxLayout,
     QWidget,
-    QTextEdit,
-    QPushButton,
-    QGraphicsDropShadowEffect,
 )
 
 from .theme_engine import ThemeEffects

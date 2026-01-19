@@ -1,12 +1,13 @@
 """Error dialog for surfacing git failures to the user."""
+
 from __future__ import annotations
 
 from PySide6.QtWidgets import (
     QDialog,
     QDialogButtonBox,
+    QLabel,
     QPlainTextEdit,
     QVBoxLayout,
-    QLabel,
     QWidget,
 )
 

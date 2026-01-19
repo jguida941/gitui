@@ -1,4 +1,5 @@
 """Full theme editor dialog wired to ThemeEngine."""
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -10,21 +11,21 @@ from PySide6.QtWidgets import (
     QComboBox,
     QDialog,
     QFileDialog,
+    QFontComboBox,
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
     QInputDialog,
     QLabel,
     QMessageBox,
+    QPlainTextEdit,
     QPushButton,
     QScrollArea,
     QSpinBox,
+    QSplitter,
     QTabWidget,
     QVBoxLayout,
     QWidget,
-    QPlainTextEdit,
-    QFontComboBox,
-    QSplitter,
 )
 
 from .theme_controls import ColorPickerButton
@@ -153,7 +154,9 @@ class ThemeEditorDialog(QDialog):
             group_layout = QFormLayout(group)
             for key in keys:
                 btn = ColorPickerButton()
-                btn.color_changed.connect(lambda value, name=key: self._on_color_changed(name, value))
+                btn.color_changed.connect(
+                    lambda value, name=key: self._on_color_changed(name, value)
+                )
                 self._color_controls[key] = btn
                 group_layout.addRow(QLabel(self._labelize(key)), btn)
             layout.addWidget(group)
@@ -194,7 +197,9 @@ class ThemeEditorDialog(QDialog):
             ("font_size_h3", "Heading 3", 10, 28),
         ]:
             spin = self._make_spinbox(minimum, maximum)
-            spin.valueChanged.connect(lambda value, name=key: self._on_metric_changed(name, value))
+            spin.valueChanged.connect(
+                lambda value, name=key: self._on_metric_changed(name, value)
+            )
             self._metric_controls[key] = spin
             sizes_layout.addRow(label, spin)
 
@@ -219,7 +224,9 @@ class ThemeEditorDialog(QDialog):
             ("border_width_focus", "Focus Width", 0, 6),
         ]:
             spin = self._make_spinbox(minimum, maximum)
-            spin.valueChanged.connect(lambda value, name=key: self._on_metric_changed(name, value))
+            spin.valueChanged.connect(
+                lambda value, name=key: self._on_metric_changed(name, value)
+            )
             self._metric_controls[key] = spin
             border_layout.addRow(label, spin)
 
@@ -233,7 +240,9 @@ class ThemeEditorDialog(QDialog):
             ("margin", "Margin", 0, 20),
         ]:
             spin = self._make_spinbox(minimum, maximum)
-            spin.valueChanged.connect(lambda value, name=key: self._on_metric_changed(name, value))
+            spin.valueChanged.connect(
+                lambda value, name=key: self._on_metric_changed(name, value)
+            )
             self._metric_controls[key] = spin
             spacing_layout.addRow(label, spin)
 
@@ -246,7 +255,9 @@ class ThemeEditorDialog(QDialog):
             ("scrollbar_width", "Scrollbar Width", 6, 20),
         ]:
             spin = self._make_spinbox(minimum, maximum)
-            spin.valueChanged.connect(lambda value, name=key: self._on_metric_changed(name, value))
+            spin.valueChanged.connect(
+                lambda value, name=key: self._on_metric_changed(name, value)
+            )
             self._metric_controls[key] = spin
             widgets_layout.addRow(label, spin)
 
@@ -278,7 +289,9 @@ class ThemeEditorDialog(QDialog):
             ("shadow_spread", "Spread", -10, 20),
         ]:
             spin = self._make_spinbox(minimum, maximum)
-            spin.valueChanged.connect(lambda value, name=key: self._on_effect_changed(name, value))
+            spin.valueChanged.connect(
+                lambda value, name=key: self._on_effect_changed(name, value)
+            )
             self._effect_controls[key] = spin
             shadow_layout.addRow(label, spin)
 
@@ -293,7 +306,9 @@ class ThemeEditorDialog(QDialog):
         transitions_layout = QFormLayout(transitions)
         duration = self._make_spinbox(0, 1000)
         duration.valueChanged.connect(
-            lambda value, name="transition_duration": self._on_effect_changed(name, value)
+            lambda value, name="transition_duration": self._on_effect_changed(
+                name, value
+            )
         )
         transitions_layout.addRow("Duration (ms)", duration)
         self._effect_controls["transition_duration"] = duration
@@ -356,14 +371,14 @@ class ThemeEditorDialog(QDialog):
         json_paste_layout = QVBoxLayout(json_paste)
         self._json_paste_input = QPlainTextEdit()
         self._json_paste_input.setPlaceholderText(
-            'Paste your JSON theme here...\n\n'
-            'Example format:\n'
-            '{\n'
+            "Paste your JSON theme here...\n\n"
+            "Example format:\n"
+            "{\n"
             '  "name": "My Theme",\n'
             '  "colors": { "background": "#1e1e1e", ... },\n'
             '  "metrics": { "border_radius": 4, ... },\n'
             '  "effects": { "shadow_enabled": true, ... }\n'
-            '}'
+            "}"
         )
         self._json_paste_input.setLineWrapMode(QPlainTextEdit.NoWrap)
         json_paste_layout.addWidget(self._json_paste_input)
@@ -384,9 +399,9 @@ class ThemeEditorDialog(QDialog):
         qss_paste_layout = QVBoxLayout(qss_paste)
         self._qss_paste_input = QPlainTextEdit()
         self._qss_paste_input.setPlaceholderText(
-            'Paste your QSS stylesheet here...\n\n'
-            'The QSS will be parsed and converted to an editable theme.\n'
-            'Colors and metrics will be extracted and can be modified.'
+            "Paste your QSS stylesheet here...\n\n"
+            "The QSS will be parsed and converted to an editable theme.\n"
+            "Colors and metrics will be extracted and can be modified."
         )
         self._qss_paste_input.setLineWrapMode(QPlainTextEdit.NoWrap)
         qss_paste_layout.addWidget(self._qss_paste_input)
@@ -492,7 +507,9 @@ class ThemeEditorDialog(QDialog):
         if not name:
             return
         if not self._engine.delete_custom_preset(name):
-            QMessageBox.information(self, "Cannot Delete", "Built-in presets cannot be deleted.")
+            QMessageBox.information(
+                self, "Cannot Delete", "Built-in presets cannot be deleted."
+            )
             return
         self._refresh_preset_combo()
 
@@ -556,7 +573,9 @@ class ThemeEditorDialog(QDialog):
         """Parse QSS and apply as editable theme."""
         qss_text = self._qss_paste_input.toPlainText().strip()
         if not qss_text:
-            QMessageBox.warning(self, "Empty Input", "Please paste a QSS stylesheet first.")
+            QMessageBox.warning(
+                self, "Empty Input", "Please paste a QSS stylesheet first."
+            )
             return
         if not self._engine.import_from_qss(qss_text):
             QMessageBox.warning(
@@ -578,14 +597,18 @@ class ThemeEditorDialog(QDialog):
         """Parse QSS and save as a named editable preset."""
         qss_text = self._qss_paste_input.toPlainText().strip()
         if not qss_text:
-            QMessageBox.warning(self, "Empty Input", "Please paste a QSS stylesheet first.")
+            QMessageBox.warning(
+                self, "Empty Input", "Please paste a QSS stylesheet first."
+            )
             return
         name, ok = QInputDialog.getText(self, "Save QSS as Preset", "Preset name:")
         if not ok or not name.strip():
             return
         # Parse QSS and save as regular editable preset
         if not self._engine.import_from_qss(qss_text, name.strip()):
-            QMessageBox.warning(self, "Parse Failed", "Could not parse the QSS stylesheet.")
+            QMessageBox.warning(
+                self, "Parse Failed", "Could not parse the QSS stylesheet."
+            )
             return
         self._engine.save_custom_preset(name.strip())
         self._engine.save_current()
@@ -599,9 +622,7 @@ class ThemeEditorDialog(QDialog):
     def _reset_to_engine_stylesheet(self) -> None:
         """Reset to the theme engine's managed stylesheet and clear saved raw QSS."""
         self._engine.clear_raw_stylesheet()
-        QMessageBox.information(
-            self, "Reset", "Theme engine stylesheet restored."
-        )
+        QMessageBox.information(self, "Reset", "Theme engine stylesheet restored.")
 
     def _refresh_preset_combo(self) -> None:
         current = self._engine.current_theme

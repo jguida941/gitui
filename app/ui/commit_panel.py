@@ -1,4 +1,5 @@
 """Commit message panel with templates and amend toggle."""
+
 from __future__ import annotations
 
 from PySide6.QtCore import Signal

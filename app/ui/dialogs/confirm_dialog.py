@@ -1,13 +1,8 @@
 """Confirmation dialog for destructive actions."""
+
 from __future__ import annotations
 
-from PySide6.QtWidgets import (
-    QDialog,
-    QDialogButtonBox,
-    QLabel,
-    QVBoxLayout,
-    QWidget,
-)
+from PySide6.QtWidgets import QDialog, QDialogButtonBox, QLabel, QVBoxLayout, QWidget
 
 
 class ConfirmDialog(QDialog):
@@ -31,7 +26,9 @@ class ConfirmDialog(QDialog):
         layout.addWidget(label)
 
         buttons = QDialogButtonBox()
-        confirm = buttons.addButton(confirm_text, QDialogButtonBox.ButtonRole.AcceptRole)
+        confirm = buttons.addButton(
+            confirm_text, QDialogButtonBox.ButtonRole.AcceptRole
+        )
         cancel = buttons.addButton(cancel_text, QDialogButtonBox.ButtonRole.RejectRole)
         confirm.clicked.connect(self.accept)
         cancel.clicked.connect(self.reject)

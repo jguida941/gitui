@@ -1,4 +1,5 @@
 """Shared UI controls for the theme editor."""
+
 from __future__ import annotations
 
 from PySide6.QtCore import Signal
@@ -39,8 +40,7 @@ class ColorPickerButton(QPushButton):
         luminance = 0.299 * qc.red() + 0.587 * qc.green() + 0.114 * qc.blue()
         text_color = "#000000" if luminance > 128 else "#FFFFFF"
 
-        self.setStyleSheet(
-            f"""
+        self.setStyleSheet(f"""
             QPushButton {{
                 background-color: {self._color};
                 color: {text_color};
@@ -51,17 +51,22 @@ class ColorPickerButton(QPushButton):
             QPushButton:hover {{
                 border: 2px solid #00FFAA;
             }}
-        """
-        )
+        """)
         self.setText(self._color.upper())
 
     def _pick_color(self) -> None:
-        options = QColorDialog.ColorDialogOption.ShowAlphaChannel if self._allow_alpha else QColorDialog.ColorDialogOption(0)
+        options = (
+            QColorDialog.ColorDialogOption.ShowAlphaChannel
+            if self._allow_alpha
+            else QColorDialog.ColorDialogOption(0)
+        )
         color = QColorDialog.getColor(QColor(self._color), self, "Pick Color", options)
         if color.isValid():
             if self._allow_alpha:
                 alpha = color.alphaF()
-                self._color = f"rgba({color.red()}, {color.green()}, {color.blue()}, {alpha:.2f})"
+                self._color = (
+                    f"rgba({color.red()}, {color.green()}, {color.blue()}, {alpha:.2f})"
+                )
             else:
                 self._color = color.name()
             self._update_style()

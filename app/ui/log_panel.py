@@ -1,4 +1,5 @@
 """Commit history panel with a simple table view."""
+
 from __future__ import annotations
 
 from PySide6.QtCore import Signal

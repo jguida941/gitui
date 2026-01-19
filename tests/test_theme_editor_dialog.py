@@ -8,7 +8,7 @@ pytest.importorskip("PySide6")
 
 os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
-from PySide6.QtWidgets import QApplication, QFileDialog, QMessageBox, QInputDialog
+from PySide6.QtWidgets import QApplication, QFileDialog, QInputDialog, QMessageBox
 
 from app.ui.theme.theme_editor_dialog import ThemeEditorDialog
 
@@ -52,8 +52,12 @@ def test_theme_editor_dialog_import_export(monkeypatch, tmp_path) -> None:
     dialog = ThemeEditorDialog()
 
     # Silence message boxes in tests.
-    monkeypatch.setattr(QMessageBox, "information", staticmethod(lambda *_args, **_kwargs: None))
-    monkeypatch.setattr(QMessageBox, "warning", staticmethod(lambda *_args, **_kwargs: None))
+    monkeypatch.setattr(
+        QMessageBox, "information", staticmethod(lambda *_args, **_kwargs: None)
+    )
+    monkeypatch.setattr(
+        QMessageBox, "warning", staticmethod(lambda *_args, **_kwargs: None)
+    )
 
     export_json = tmp_path / "theme.json"
     export_qss = tmp_path / "theme.qss"
