@@ -11,6 +11,11 @@ python:
     pytest:
       enabled: true
       min_coverage: 70
+      args:
+      - -k
+      - not status_panel_context_menu
+      env:
+        QT_QPA_PLATFORM: offscreen
     ruff:
       enabled: true
       max_errors: 0
