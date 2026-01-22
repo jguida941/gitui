@@ -55,4 +55,4 @@ reports:
   retention_days: 30
 language: python
 install:
-  source: pypi
+  source: git
