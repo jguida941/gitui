@@ -41,6 +41,12 @@ bash scripts/install_mac.sh
 .venv/bin/python -m app.main --repo /path/to/repo
 ```
 
+Optional convenience launcher:
+
+```bash
+./scripts/gitui --repo /path/to/repo
+```
+
 ### Windows (PowerShell)
 
 ```powershell
