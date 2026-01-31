@@ -1,0 +1,84 @@
+# Install GitUI
+
+This repo ships one-run installers for Windows (PowerShell/CMD) and macOS. Each installer creates a local `.venv` and installs GitUI into it.
+
+Prereqs:
+- Git
+- Python 3.10+ (installers can prompt to install it)
+
+## 1) Clone the repo
+
+```bash
+git clone https://github.com/jguida941/gitui
+cd gitui
+```
+
+## 2) Run the installer
+
+### Windows (PowerShell)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts/install_windows.ps1
+```
+
+### Windows (CMD)
+
+```bat
+cmd /c scripts\install_windows.cmd
+```
+
+### macOS
+
+```bash
+bash scripts/install_mac.sh
+```
+
+## 3) Run GitUI
+
+```bash
+# Windows
+.venv\Scripts\python -m app.main --repo C:\path\to\repo
+
+# macOS
+.venv/bin/python -m app.main --repo /path/to/repo
+```
+
+## Update (same venv)
+
+```bash
+git pull
+
+# Windows
+.venv\Scripts\python -m pip install -U .
+
+# macOS
+.venv/bin/python -m pip install -U .
+```
+
+## Homebrew (release required)
+
+Homebrew installs require a tagged release and a tap repository. Use the formula template in `packaging/homebrew/gitui.rb`.
+
+### Install Homebrew (macOS)
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+### Create a tap repo
+
+Tap repo: https://github.com/jguida941/homebrew-gitui
+
+Users will run:
+
+```bash
+brew tap jguida941/gitui
+brew install gitui
+```
+
+### Update via Homebrew
+
+```bash
+brew update
+brew upgrade gitui
+```

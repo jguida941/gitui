@@ -38,7 +38,11 @@ Customize the entire look and feel of GitUI without editing any code.
 - **Effects** - Configure drop shadows, transition animations, and hover effects
 - **Import/Export** - Load themes from JSON files, paste JSON or QSS directly, and export your themes as JSON or Qt stylesheets (QSS)
 
-## Quick Start
+## Install
+
+See `INSTALL.md` for Windows (PowerShell/CMD), macOS, and Homebrew instructions.
+
+## Dev Quick Start
 
 ```bash
 # Install dependencies
