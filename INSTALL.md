@@ -58,6 +58,7 @@ git pull
 ## Homebrew (release required)
 
 Homebrew installs require a tagged release and a tap repository. Use the formula template in `packaging/homebrew/gitui.rb`.
+Note: `brew install gitui` installs the Rust TUI from Homebrew/core, not this app. Use the fully-qualified formula name below.
 
 ### Install Homebrew (macOS)
 
@@ -73,12 +74,18 @@ Users will run:
 
 ```bash
 brew tap jguida941/gitui
-brew install gitui
+brew install jguida941/gitui/gitui
+```
+
+If you already installed the Homebrew/core `gitui`, remove it first:
+
+```bash
+brew uninstall gitui
 ```
 
 ### Update via Homebrew
 
 ```bash
 brew update
-brew upgrade gitui
+brew upgrade jguida941/gitui/gitui
 ```
