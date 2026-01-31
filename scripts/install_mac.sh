@@ -75,4 +75,10 @@ fi
 ./.venv/bin/python -m pip install --upgrade pip
 ./.venv/bin/python -m pip install .
 
-echo "Install complete. Run: .venv/bin/python -m app.main --repo <path>"
+echo "Install complete!"
+echo ""
+echo "To launch GitUI:"
+echo "  $ROOT/.venv/bin/python -m app.main"
+echo ""
+echo "To open a specific repo:"
+echo "  $ROOT/.venv/bin/python -m app.main --repo <path>"

@@ -35,12 +35,22 @@ bash scripts/install_mac.sh
 
 ## 3) Run GitUI
 
-```bash
-# Windows
-.venv\Scripts\python -m app.main --repo C:\path\to\repo
+### macOS
 
-# macOS
+```bash
 .venv/bin/python -m app.main --repo /path/to/repo
+```
+
+### Windows (PowerShell)
+
+```powershell
+.\.venv\Scripts\python -m app.main --repo C:\path\to\repo
+```
+
+### Windows (CMD)
+
+```cmd
+.venv\Scripts\python -m app.main --repo C:\path\to\repo
 ```
 
 ## Update (same venv)
@@ -48,11 +58,11 @@ bash scripts/install_mac.sh
 ```bash
 git pull
 
-# Windows
-.venv\Scripts\python -m pip install -U .
-
 # macOS
-.venv/bin/python -m pip install -U .
+.venv/bin/pip install -U .
+
+# Windows (PowerShell or CMD)
+.venv\Scripts\pip install -U .
 ```
 
 ## Homebrew (release required)

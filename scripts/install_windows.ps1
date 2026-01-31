@@ -7,8 +7,9 @@ $Venv = Join-Path $Root ".venv"
 
 function Test-Python {
     param([string[]]$Cmd)
-    & $Cmd -c "import sys; raise SystemExit(0 if sys.version_info >= (3, 10) else 1)" | Out-Null
-    return $LASTEXITCODE -eq 0
+    $code = 'import sys, os; exe=sys.executable or ""; ok=sys.version_info >= (3,10) and "windowsapps" not in exe.lower(); print("PYOK" if ok else "PYNO"); raise SystemExit(0 if ok else 1)'
+    $out = & $Cmd -c $code 2>$null
+    return ($LASTEXITCODE -eq 0) -and ($out -match "PYOK")
 }
 
 function Resolve-PythonCmd {
@@ -21,6 +22,17 @@ function Resolve-PythonCmd {
         if (Test-Python $cmd) { return $cmd }
     }
     return $null
+}
+
+function Invoke-Checked {
+    param([object]$Cmd, [string[]]$Args)
+    & $Cmd @Args
+    if ($LASTEXITCODE -ne 0) {
+        $cmdText = if ($Cmd -is [System.Collections.IEnumerable] -and $Cmd -notis [string]) { $Cmd -join " " } else { [string]$Cmd }
+        $argText = if ($Args) { $Args -join " " } else { "" }
+        $msg = ("Command failed: " + $cmdText + " " + $argText).Trim()
+        throw $msg
+    }
 }
 
 $PythonCmd = Resolve-PythonCmd
@@ -44,7 +56,7 @@ if (-not $PythonCmd) {
 }
 
 if (-not (Test-Path $Venv)) {
-    & $PythonCmd -m venv $Venv
+    Invoke-Checked -Cmd $PythonCmd -Args @("-m", "venv", $Venv)
 }
 
 $Pip = Join-Path $Venv "Scripts\pip.exe"
@@ -54,7 +66,13 @@ if (-not (Test-Path $Pip)) {
     exit 1
 }
 
-& $Py -m pip install --upgrade pip
-& $Py -m pip install .
+Invoke-Checked -Cmd $Py -Args @("-m", "pip", "install", "--upgrade", "pip")
+Invoke-Checked -Cmd $Py -Args @("-m", "pip", "install", ".")
 
-Write-Host "Install complete. Run: .venv\\Scripts\\python -m app.main --repo <path>"
+Write-Host "Install complete!"
+Write-Host ""
+Write-Host "To launch GitUI:"
+Write-Host "  $Root\.venv\Scripts\python -m app.main"
+Write-Host ""
+Write-Host "To open a specific repo:"
+Write-Host "  $Root\.venv\Scripts\python -m app.main --repo <path>"

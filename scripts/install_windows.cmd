@@ -37,6 +37,7 @@ if errorlevel 1 (
 :after_python_check
 if not exist .venv (
   call %PY% -m venv .venv
+  if errorlevel 1 exit /b 1
 )
 
 if not exist .venv\Scripts\python.exe (
@@ -45,9 +46,17 @@ if not exist .venv\Scripts\python.exe (
 )
 
 .venv\Scripts\python.exe -m pip install --upgrade pip
+if errorlevel 1 exit /b 1
 .venv\Scripts\python.exe -m pip install .
+if errorlevel 1 exit /b 1
 
-echo Install complete. Run: .venv\Scripts\python -m app.main --repo ^<path^>
+echo Install complete!
+echo.
+echo To launch GitUI:
+echo   %ROOT%\.venv\Scripts\python -m app.main
+echo.
+echo To open a specific repo:
+echo   %ROOT%\.venv\Scripts\python -m app.main --repo ^<path^>
 
 exit /b 0
 
@@ -68,5 +77,9 @@ if %errorlevel%==0 (
 exit /b 1
 
 :check_version
-call %PY% -c "import sys; raise SystemExit(0 if sys.version_info >= (3,10) else 1)"
-exit /b %errorlevel%
+set "PYOK="
+for /f "delims=" %%A in ('%PY% -c "import sys, os; exe=sys.executable or \"\"; ok=sys.version_info >= (3,10) and \"windowsapps\" not in exe.lower(); print(\"PYOK\" if ok else \"PYNO\"); raise SystemExit(0 if ok else 1)" 2^>nul') do (
+  if "%%A"=="PYOK" set "PYOK=1"
+)
+if defined PYOK exit /b 0
+exit /b 1
