@@ -4,7 +4,7 @@ class Gitui < Formula
   desc "PySide6 Git UI"
   homepage "https://github.com/jguida941/gitui"
   url "https://github.com/jguida941/gitui/archive/refs/tags/v0.1.0.tar.gz"
-  sha256 "REPLACE_ME"
+  sha256 "b99389c0c5f3e49d59fd5f9c6d1b15d99c97622ed1656c6a65c16aa6390dbbff"
 
   depends_on "python"
   depends_on "git"
